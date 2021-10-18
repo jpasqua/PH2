@@ -1,0 +1,166 @@
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+  <style>
+    canvas {
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+  </style>
+  <div style="width:75\%;">
+    <canvas id="hour_canvas"></canvas><br>
+    <canvas id="day_canvas"></canvas><br>
+    <canvas id="week_canvas"></canvas><br>
+  </div>
+  <br>
+  <br>
+
+  <script>
+    const color_temp = '%TMP_CLR%';
+    const color_aqi = '%AQI_CLR%';
+
+    const colorBands = [
+      '#D9F8D2', '#FFFFD6', '#FBE0CE', '#FACCC9', '#EFB2C0',
+      '#E398B7', '#FA7FB7', '#FA63B1', '#FA4BA5', '#FA2BA5' ]
+
+    function showLoading(canvasName) {
+      var c = document.getElementById(canvasName);
+      var ctx = c.getContext("2d");
+      ctx.font = "30px Arial";
+      ctx.beginPath();
+      ctx.rect(0, 0, 200, 100);
+      ctx.stroke();
+      ctx.fillText("Loading...", 10, 50);
+    }
+
+    Chart.pluginService.register({
+      beforeDraw: function (chart, easing) {
+        if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+          var helpers = Chart.helpers;
+          var ctx = chart.chart.ctx;
+          var chartArea = chart.chartArea;
+          var yScale = chart.scales["aqi"];
+
+          ctx.save();
+          var done = false;
+          for (var y = 50; y <= 500 && !done; y += 50) {
+            var yPixel = yScale.getPixelForValue(y)
+            if (yPixel <= chartArea.top) { yPixel = chartArea.top; done = true; }
+            ctx.fillStyle = colorBands[y/50-1];
+            var lower = Math.min(yScale.getPixelForValue(y-50), chartArea.bottom)
+            var ht = yPixel - lower
+            ctx.fillRect(chartArea.left, lower, chartArea.right - chartArea.left, ht);
+          }
+          ctx.restore();
+        }
+      }
+    });
+
+    function createOptions(theTitle) {
+      return {
+        responsive: true, title: { display: true, text: theTitle, fontSize:16 },
+        chartArea: { backgroundColor: 'rgba(251, 85, 85, 0.4)' },
+        scales: {
+          xAxes: [
+            { display: true, scaleLabel: { display: true, labelString: 'Date' }, type: 'time' }],
+          yAxes: [
+            { id: 'aqi', position: 'left', display: true,
+              ticks: {fontColor: color_aqi },
+              scaleLabel: { display: true, labelString: 'AQI', fontColor: color_aqi }},
+            { id: 'temp', position: 'right', display: true,
+              ticks: {suggestedMin: 50, suggestedMax: 90, fontColor: color_temp },
+              scaleLabel: { display: true, labelString: 'Temperature', fontColor: color_temp  }}
+          ]
+        }
+      }
+    }
+
+    function dataset(label, axis, color, hide) {
+      return { label: label, yAxisID: axis,  borderColor: color,
+        fill: false, lineTension: 0, data: [], hidden: hide };
+    }
+
+    function createDatasets() {
+      return {
+          datasets: [
+            dataset('PM10 ENV', 'aqi', '%PM10_CLR%', true),
+            dataset('PM25 ENV', 'aqi', '%PM25_CLR%', true),
+            dataset('PM100 ENV', 'aqi', '%PM100_CLR%', true),
+            dataset('AQI', 'aqi', color_aqi, false),
+            dataset('Temp', 'temp', color_temp, false)]
+        }
+    }
+
+    var hour_config = {
+        type: 'line', data: createDatasets(),
+        options: createOptions("Historical Data for the Last Hour")
+      };
+    var day_config = {
+      type: 'line', data: createDatasets(),
+      options: createOptions("Historical Data for the Last Day") };
+    var week_config = {
+      type: 'line', data: createDatasets(),
+      options: createOptions("Historical Data for the Last Week") };
+
+
+    const AQITable = [
+      {pMin:   0.0, pRange:  15.4, aqMin:   0, aqRange: 50},
+      {pMin:  15.5, pRange:  24.9, aqMin:  51, aqRange: 49},
+      {pMin:  40.5, pRange:  24.9, aqMin: 101, aqRange: 49},
+      {pMin:  65.5, pRange:  84.9, aqMin: 151, aqRange: 49},
+      {pMin: 150.5, pRange:  99.9, aqMin: 201, aqRange: 99},
+      {pMin: 250.5, pRange: 249.9, aqMin: 301, aqRange: 199}
+    ]
+
+    function calcAQI(reading) {
+      var i
+      for (i = 0; i < AQITable.length; i++) {
+        if (reading < AQITable[i].pMin) break;
+      }
+      if (i == AQITable.length) return 500;
+      else i--;
+      var aqi = ((reading -  AQITable[i].pMin)*(AQITable[i].aqRange))/AQITable[i].pRange + AQITable[i].aqMin
+      return Math.floor(aqi)
+    }
+
+    const useMetric = %USE_METRIC%;
+
+    function oneDecimal(f) {
+      return Math.trunc(Math.round(f*10))/10
+    }
+
+    function prepData(theConfig, aqiData, weatherData) {
+      for (var dataset of theConfig.data.datasets) dataset.data = [];
+      datasets = theConfig.data.datasets;
+      for (var sample of aqiData.history) {
+        var timestamp = sample.ts*1000
+        datasets[0].data.push({x: timestamp, y: sample.env.pm10})
+        datasets[1].data.push({x: timestamp, y: sample.env.pm25})
+        datasets[2].data.push({x: timestamp, y: sample.env.pm100})
+        datasets[3].data.push({x: timestamp, y: sample.aqi})
+      }
+      for (var sample of weatherData.history) {
+        var temp = useMetric ? sample.t : (sample.t * 1.8 + 32);
+        datasets[4].data.push({x: sample.ts*1000, y: oneDecimal(temp)})
+      }
+    }  
+
+    function drawChart(range, config) {
+      var getAQI = $.getJSON("http://nrso.local/getHistory?range="+range);
+      var getWeather = $.getJSON("http://nrso.local/getWeatherHistory?range="+range);
+      $.when(getAQI, getWeather)
+        .then(function(aqiResult, weatherResult) {
+          prepData(config, aqiResult[0], weatherResult[0]);
+          new Chart(document.getElementById(range+'_canvas').getContext('2d'), config);
+        });
+    }
+
+    showLoading('hour_canvas');
+    showLoading('day_canvas');
+    showLoading('week_canvas');
+    drawChart("hour", hour_config);
+    drawChart("day", day_config);
+    drawChart("week", week_config);
+
+  </script>

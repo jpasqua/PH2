@@ -1,0 +1,50 @@
+{
+  "version": 2,
+  "description": "Air Quality Sensor",
+  "blynkAPIKey": "lCKwBtDRSSYxxmgSNraDK0HXY4P4lPj_",
+  "iBright": 50,
+  "chartColors": {
+    "pm10": "#e32400",
+    "pm25": "#4e7a27",
+    "pm100": "#0042aa",
+    "aqi": "#000000"
+  },
+  "wthr": {
+    "tempCorrection": 0,
+    "humiCorrection": 0,
+    "chartColors": {
+      "temp": "#00a3d7",
+      "avg": "#4e7a27"
+    }
+  },
+  "showDevMenu": true,
+  "use24Hour": false,
+  "useMetric": false,
+  "screenBlankMinutes": 15,
+  "scheduleActive": true,
+  "morning": {
+    "hr": 8,
+    "min": 0,
+    "brightness": 90
+  },
+  "evening": {
+    "hr": 22,
+    "min": 0,
+    "brightness": 50
+  },
+  "invertDisplay": true,
+  "calibrationData": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "owm": {
+    "enabled": true,
+    "key": "da9b79c366a55419e3013a13ae39e549",
+    "cityID": 5334320,
+    "language": "en",
+    "nickname": "Carmel"
+  }
+}

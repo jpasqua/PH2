@@ -1,0 +1,341 @@
+/*
+ * PurpleHazeApp:
+ *    A simple example of a WebThingApp that display times and currency
+ *    exchange rates.
+ *
+ * CUSTOMIZATION:
+ * o To create your own app based on this sample, search for 'CUSTOM'
+ *   to find areas that should be changed/customized
+ * o Areas labeled 'BOILERPLATE' may require mechanical changes such as updating
+ *   the names you have used for classes and variables
+ *
+ */
+
+
+//--------------- Begin:  Includes ---------------------------------------------
+//                                  Hardware Definitions
+#include "src/hardware/HWConfig.h"
+//                                  Core Libraries
+//                                  Third Party Libraries
+#include <ArduinoLog.h>
+#include <TimeLib.h>
+#include <Output.h>
+//                                  WebThing Includes
+#include <DataBroker.h>
+#include <WebUI.h>
+#include <clients/BlynkMgr.h>
+#include <sensors/WeatherUtils.h>
+#include <clients/WeatherBlynkPublisher.h>
+//                                  WebThingApp Includes
+#include <gui/Display.h>
+#include <gui/ScreenMgr.h>
+#include <plugins/PluginMgr.h>
+#include <plugins/common/GenericPlugin.h>
+#include <plugins/common/BlynkPlugin.h>
+//                                  Local Includes
+#include "PurpleHazeApp.h"
+#include "PHSettings.h"
+#include "PHWebUI.h"
+#include "PHDataSupplier.h"
+#include "src/clients/AQIBlynkPublisher.h"
+#include "src/screens/AppTheme.h"
+//--------------- End:    Includes ---------------------------------------------
+
+
+//--------------- Begin:  Includes ---------------------------------------------
+//                                  Core Libraries
+//                                  Third Party Libraries
+//                                  WebThing Includes
+//                                  Local Includes
+//--------------- End:    Includes ---------------------------------------------
+
+
+/*------------------------------------------------------------------------------
+ *
+ * Constants
+ *
+ *----------------------------------------------------------------------------*/
+
+// CUSTOM: Update these strings for your app:
+static const char* VersionString = "0.0.9";
+static const char* AppName = "PurpleHaze";
+static const char* AppPrefix = "PH-";
+
+
+/*------------------------------------------------------------------------------
+ *
+ * Private Utility Functions
+ *
+ *----------------------------------------------------------------------------*/
+
+Plugin* pluginFactory(const String& type) {
+  Plugin *p = NULL;
+
+  // CUSTOM: Choose which plugins you'd like to load
+  if      (type.equalsIgnoreCase("generic")) { p = new GenericPlugin(); }
+  else if (type.equalsIgnoreCase("blynk"))   { p = new BlynkPlugin();   }  
+
+  if (p == NULL) {
+    Log.warning("Unrecognized plugin type: %s", type.c_str());
+  }
+  return p;
+}
+
+/*------------------------------------------------------------------------------
+ *
+ * Class function to create and start the PurpleHazeApp singleton
+ *
+ *----------------------------------------------------------------------------*/
+
+static PHSettings theSettings;  // Allocate storage for the app settings
+
+void PurpleHazeApp::create() {
+  // BOILERPLATE
+  PluginMgr::setFactory(pluginFactory);
+  PurpleHazeApp* app = new PurpleHazeApp(&theSettings);
+
+  app->begin();
+}
+
+
+/*------------------------------------------------------------------------------
+ *
+ * PurpleHazeApp Public Functions
+ *
+ *----------------------------------------------------------------------------*/
+
+
+PurpleHazeApp::PurpleHazeApp(PHSettings* settings) :
+    WTAppImpl(AppName, AppPrefix, VersionString, settings)
+{
+  // CUSTOM: Perform any object initialization here, this
+  // is often related to initializing hardware
+  configureDisplay();
+  configureNonButtonPins();
+  configureIndicators();
+  prepSensors();
+  
+  Output::setOptions(&(phSettings->uiOptions.useMetric), &(phSettings->uiOptions.use24Hour));
+
+  delay(1000);  // TO DO: Do we need this for some reason?
+}
+
+
+/*------------------------------------------------------------------------------
+ *
+ * Mandatory WTAppImpl virtual functions
+ *
+ *----------------------------------------------------------------------------*/
+
+void PurpleHazeApp::app_registerDataSuppliers() {
+  // BOILERPLATE
+  DataBroker::registerMapper(PHDataSupplier::dataSupplier, PHDataSupplier::PHPrefix);
+}
+
+void PurpleHazeApp::app_initWebUI() {
+  // BOILERPLATE
+  PHWebUI::init();
+}
+
+void PurpleHazeApp::app_loop() {
+  // CUSTOM: Perform any app-specific periodic activity
+  // Note that app_conditionalUpdate() is called for you automatically on a
+  // periodic basis, so no need to do that here.
+
+  aqiMgr.loop();
+}
+
+void PurpleHazeApp::app_initClients() {
+  // CUSTOM: If your app has any app-specific clients, initilize them now
+
+  ScreenMgr.showActivityIcon(AppTheme::Color_UpdatingRates);
+
+  prepBlynk();
+
+  ScreenMgr.hideActivityIcon();
+}
+
+void PurpleHazeApp::app_conditionalUpdate(bool force) {
+  // CUSTOM: Update any app-specific clients
+  static uint32_t lastTimestamp = 0;
+
+  const AQIReadings& aqiReadings = aqiMgr.getLastReadings();
+  if (aqiReadings.timestamp != lastTimestamp) {
+    busyIndicator->setColor(0, 255, 0);
+    uint16_t quality = aqiMgr.derivedAQI(aqiReadings.env.pm25);
+    qualityIndicator->setColor(aqiMgr.colorForQuality(quality));
+    lastTimestamp = aqiReadings.timestamp;
+    busyIndicator->off();
+  }
+
+  #if defined(HAS_WEATHER_SENSOR)
+    weatherMgr.takeReadings(force);
+  #else
+    (void)force;
+  #endif  // HAS_WEATHER_SENSOR
+
+  BlynkMgr::publish();
+}
+
+Screen* PurpleHazeApp::app_registerScreens() {
+  // CUSTOM: Register any app-specific Screen objects
+  splashScreen = new SplashScreen();
+  homeScreen = new HomeScreen();
+  aqiScreen = new AQIScreen();
+
+  ScreenMgr.registerScreen("Splash", splashScreen);
+  ScreenMgr.registerScreen("Home", homeScreen);
+  ScreenMgr.registerScreen("AQI", aqiScreen);
+  ScreenMgr.setAsHomeScreen(homeScreen);
+
+  // CUSTOM: Associate a confirm/cancel buttons with the reboot screen
+  screens.rebootScreen->setButtons(hwConfig.advanceButton, hwConfig.previousButton);
+
+  // CUSTOM: Add a sequence of screens that the user can cycle through
+  BaseScreenMgr::ScreenSequence* sequence = new BaseScreenMgr::ScreenSequence;
+  sequence->push_back(homeScreen);
+  sequence->push_back(aqiScreen);
+  sequence->push_back(wtAppImpl->screens.weatherScreen);
+  sequence->push_back(wtAppImpl->screens.forecastFirst3);
+  sequence->push_back(wtAppImpl->screens.forecastLast2);
+  // Add any plugins to the sequence
+  uint8_t nPlugins = pluginMgr.getPluginCount();
+  for (int i = 0; i < nPlugins; i++) {
+    Plugin* p = pluginMgr.getPlugin(i);
+    sequence->push_back(p->getFlexScreen());
+  }
+  sequence->push_back(wtAppImpl->screens.infoScreen);
+  ScreenMgr.setSequence(sequence);
+
+  return splashScreen;
+}
+
+/*------------------------------------------------------------------------------
+ *
+ * Functions for use by other parts of the app
+ *
+ *----------------------------------------------------------------------------*/
+
+  void PurpleHazeApp::setIndicatorBrightness(uint8_t b) {
+    if (indicators) indicators->setBrightness((b*255L)/100);
+  }
+
+/*------------------------------------------------------------------------------
+ *
+ * Optional WTAppImpl virtual functions
+ *
+ *----------------------------------------------------------------------------*/
+
+void PurpleHazeApp::app_registerButtons() {
+  // CUSTOM: Register any physical buttons that are connected
+  for (int i = 0; i < hwConfig.nPhysicalButtons; i++) {
+    uint8_t pin = hwConfig.physicalButtons[i];
+    if (pin != UNUSED_PIN) {
+      WebThing::buttonMgr.addButton(pin);
+    }
+  }
+
+  ScreenMgr.setSequenceButtons(hwConfig.advanceButton, hwConfig.previousButton);
+}
+
+/*------------------------------------------------------------------------------
+ *
+ * Protected functions
+ *
+ *----------------------------------------------------------------------------*/
+
+void PurpleHazeApp::configModeCallback(const String &ssid, const String &ip) {
+  busyIndicator->setColor(0, 0, 255);
+  WTAppImpl::configModeCallback(ssid, ip);
+}
+
+
+/*------------------------------------------------------------------------------
+ *
+ * Private functions
+ *
+ *----------------------------------------------------------------------------*/
+
+void PurpleHazeApp::prepBlynk() {
+  BlynkMgr::init(phSettings->blynkAPIKey);
+
+  // ----- Register the BME Publisher
+  #if defined(HAS_WEATHER_SENSOR)
+    WeatherBlynkPublisher* bp = new WeatherBlynkPublisher(&weatherMgr);
+    BlynkMgr::registerPublisher(bp);
+  #endif
+
+  // ----- Register the AQI Publisher
+  AQIBlynkPublisher* ap = new AQIBlynkPublisher(&aqiMgr);
+  BlynkMgr::registerPublisher(ap);
+}  
+
+//
+// ----- Hardware Configuration
+//
+
+void PurpleHazeApp::prepSensors() {
+  // Start with the Air Quality Sensor
+  streamToSensor.begin();
+
+  if (!aqiMgr.init(streamToSensor.s, sensorIndicator)) {
+    Log.error("Unable to connect to Air Quality Sensor!");
+    qualityIndicator->setColor(255, 0, 0);
+    sensorIndicator->setColor(255, 0, 0);
+    busyIndicator->setColor(255, 0, 0);
+  }
+
+  #if defined(HAS_WEATHER_SENSOR)
+    auto weatherBusyCallBack = [](bool busy) {
+      if (busy) busyIndicator->setColor(0, 255, 0);
+      else busyIndicator->off();
+    }
+
+    WeatherUtils::configureAvailableSensors(weatherMgr);
+    weatherMgr.init(
+      phSettings->weatherSettings.tempCorrection,
+      phSettings->weatherSettings.humiCorrection,
+      WebThing::settings.elevation,
+      weatherBusyCallBack);
+  #endif
+}
+
+void PurpleHazeApp::configureDisplay() {
+  // Set the display options before we fire up the display!
+  Display.setDeviceOptions(&hwConfig.displayDeviceOptions);
+}
+
+void PurpleHazeApp::configureNonButtonPins() {
+  // Initialize the synthetic grounds
+  for (int i = 0; i < hwConfig.nSyntheticGrounds; i++) {
+    uint8_t pin = hwConfig.syntheticGrounds[i];
+    if (pin != UNUSED_PIN) {
+      pinMode(pin, OUTPUT);
+      digitalWrite(pin, LOW);      
+    }
+  }
+
+  if (hwConfig.corePins.scl != UNUSED_PIN && hwConfig.corePins.sda != UNUSED_PIN) {
+    // Override the deault I2C Pins
+    Wire.begin(SDA_PIN, SCL_PIN);
+  }
+}
+
+void PurpleHazeApp::configureIndicators() {
+  if (NEOPIXEL_PIN == UNUSED_PIN) {
+    indicators = NULL;
+    qualityIndicator = new Indicator();
+    sensorIndicator = new Indicator();
+    busyIndicator = new Indicator();
+  } else {
+    indicators = new NeoPixelIndicators(NEOPIXEL_PIN, 3);
+    indicators->begin();
+    indicators->setBrightness(phSettings->iBright);
+    NeoPixelIndicator* npi;
+    npi = new NeoPixelIndicator(); npi->begin(indicators, 0); qualityIndicator = npi;
+    npi = new NeoPixelIndicator(); npi->begin(indicators, 1); sensorIndicator = npi;
+    npi = new NeoPixelIndicator(); npi->begin(indicators, 2); busyIndicator = npi;
+  }
+  qualityIndicator->setColor(0x969697);  // No data available yet
+}
+
