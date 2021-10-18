@@ -22,7 +22,7 @@ constexpr uint8_t BME_I2C_ADDR = 0x76;
 // constexpr uint8_t DS18B20_PIN = XX;
 
 // Here is a configuration where there is a single BME280 sensor
-// #define BME280_READINGS (BME280_AVAIL_READINGS)
+#define BME280_READINGS (BME280_AVAIL_READINGS)
 
 // Here is a config with a BME280 and a DS18B20. We want the temp
 // value to come from the DS18B20 because it is more stable, accurate
