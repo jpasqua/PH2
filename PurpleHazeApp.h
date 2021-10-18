@@ -31,9 +31,9 @@
 //                                  WebThing Includes
 #include <WTAppImpl.h>
 #include <sensors/WeatherMgr.h>
+#include <sensors/AQIMgr.h>
 //                                  Local Includes
 #include "PHSettings.h"
-#include "src/clients/AQIMgr.h"
 #include "src/screens/SplashScreen.h"
 #include "src/screens/HomeScreen.h"
 #include "src/screens/AQIScreen.h"

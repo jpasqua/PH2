@@ -26,6 +26,7 @@
 #include <clients/BlynkMgr.h>
 #include <sensors/WeatherUtils.h>
 #include <clients/WeatherBlynkPublisher.h>
+#include <clients/AQIBlynkPublisher.h>
 //                                  WebThingApp Includes
 #include <gui/Display.h>
 #include <gui/ScreenMgr.h>
@@ -37,7 +38,6 @@
 #include "PHSettings.h"
 #include "PHWebUI.h"
 #include "PHDataSupplier.h"
-#include "src/clients/AQIBlynkPublisher.h"
 #include "src/screens/AppTheme.h"
 //--------------- End:    Includes ---------------------------------------------
 
@@ -286,10 +286,10 @@ void PurpleHazeApp::prepSensors() {
   }
 
   #if defined(HAS_WEATHER_SENSOR)
-    auto weatherBusyCallBack = [](bool busy) {
+    auto weatherBusyCallBack = [this](bool busy) {
       if (busy) busyIndicator->setColor(0, 255, 0);
       else busyIndicator->off();
-    }
+    };
 
     WeatherUtils::configureAvailableSensors(weatherMgr);
     weatherMgr.init(

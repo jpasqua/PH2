@@ -14,6 +14,7 @@
 #include <BPABasics.h>
 #include <Output.h>
 //                                  WebThing Includes
+#include <sensors/AQIMgr.h>
 #include <sensors/WeatherMgr.h>
 //                                  WebThingApp Includes
 #include <WebUIHelper.h>
@@ -21,7 +22,6 @@
 #include "src/hardware/HWConfig.h"
 #include "PurpleHazeApp.h"
 #include "PHWebUI.h"
-#include "src/clients/AQIMgr.h"
 //--------------- End:    Includes ---------------------------------------------
 
 
