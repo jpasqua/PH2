@@ -134,14 +134,16 @@ namespace PHWebUI {
       auto action = []() {
         String rangeArg = WebUI::arg("range");
         AQIMgr::HistoryRange range;
+        bool combined = false;
 
         if (rangeArg.equalsIgnoreCase("hour")) range = AQIMgr::HistoryRange::Range_1Hour;
         else if (rangeArg.equalsIgnoreCase("day")) range = AQIMgr::HistoryRange::Range_1Day;
         else if (rangeArg.equalsIgnoreCase("week")) range = AQIMgr::HistoryRange::Range_1Week;
-        else range = AQIMgr::HistoryRange::Range_Combined;
+        else combined = true;
 
-        auto provider = [range](Stream& s) -> void {
-          phApp->aqiMgr.emitHistoryAsJson(range, s);
+        auto provider = [=](Stream& s) -> void {
+          if (combined) phApp->aqiMgr.emitHistoryAsJson(s);
+          else phApp->aqiMgr.emitHistoryAsJson(range, s);
         };
 
         WebUI::sendArbitraryContent("application/json", -1, provider);
@@ -155,14 +157,16 @@ namespace PHWebUI {
       auto action = []() {
         String rangeArg = WebUI::arg("range");
         WeatherMgr::HistoryRange range;
+        bool combined = false;
 
         if (rangeArg.equalsIgnoreCase("hour")) range = WeatherMgr::HistoryRange::Range_1Hour;
         else if (rangeArg.equalsIgnoreCase("day")) range = WeatherMgr::HistoryRange::Range_1Day;
         else if (rangeArg.equalsIgnoreCase("week")) range = WeatherMgr::HistoryRange::Range_1Week;
-        else range = WeatherMgr::HistoryRange::Range_Combined;
+        else combined = true;
 
-        auto provider = [range](Stream& s) -> void {
-          phApp->weatherMgr.emitHistoryAsJson(range, s);
+        auto provider = [=](Stream& s) -> void {
+          if (combined) phApp->weatherMgr.emitHistoryAsJson(s);
+          else phApp->weatherMgr.emitHistoryAsJson(range, s);
         };
 
         WebUI::sendArbitraryContent("application/json", -1, provider);
