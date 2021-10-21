@@ -15,9 +15,6 @@
  * o Macros are provided to easily get the app and settings in their
  *   specialized forms.
  *
- * Customization:
- * o To add a new screen to the app, declare it here and instantiate it
- *   in the associated .cpp file.
  */
 
 
@@ -34,9 +31,7 @@
 #include <sensors/AQIMgr.h>
 //                                  Local Includes
 #include "PHSettings.h"
-#include "src/screens/SplashScreen.h"
-#include "src/screens/HomeScreen.h"
-#include "src/screens/AQIScreen.h"
+#include "PHScreenConfig.h"
 #include "src/hardware/SecondarySerial.h"
 //--------------- End:    Includes ---------------------------------------------
 
@@ -52,6 +47,7 @@ class PurpleHazeApp : public WTAppImpl {
 public:
   static void create();
 
+  // CUSTOM: Data defined by this app which is available to the whole app
   AQIMgr aqiMgr;
   WeatherMgr weatherMgr;
 
@@ -61,11 +57,7 @@ public:
   NeoPixelIndicators* indicators;
 
   // CUSTOM: Screens implemented by this app
-  SplashScreen*   splashScreen;
-  HomeScreen*     homeScreen;
-  AQIScreen*      aqiScreen;
-
-  // CUSTOM: Data defined by this app which is available to the whole app
+  PHScreens appScreens;
 
 
   // ----- Functions that *must* be provided by subclasses
@@ -77,7 +69,7 @@ public:
   virtual void app_loop() override;
 
   // ----- Functions that *may* be provided by subclasses
-  virtual void app_registerButtons() override;
+  virtual void app_configureHW() override;
 
   // ----- Public functions
   PurpleHazeApp(PHSettings* settings);
@@ -90,7 +82,7 @@ private:
   void prepBlynk();
   void prepSensors();
   void configureDisplay();
-  void configureNonButtonPins();
+  void configurePins();
   void configureIndicators();
 
   SecondarySerial streamToSensor;

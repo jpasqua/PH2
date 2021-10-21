@@ -19,7 +19,6 @@
 //                                  Third Party Libraries
 #include <ArduinoLog.h>
 #include <TimeLib.h>
-#include <Output.h>
 //                                  WebThing Includes
 #include <DataBroker.h>
 #include <WebUI.h>
@@ -108,16 +107,8 @@ void PurpleHazeApp::create() {
 PurpleHazeApp::PurpleHazeApp(PHSettings* settings) :
     WTAppImpl(AppName, AppPrefix, VersionString, settings)
 {
-  // CUSTOM: Perform any object initialization here, this
-  // is often related to initializing hardware
-  configureDisplay();
-  configureNonButtonPins();
-  configureIndicators();
-  prepSensors();
-  
-  Output::setOptions(&(phSettings->uiOptions.useMetric), &(phSettings->uiOptions.use24Hour));
-
-  delay(1000);  // TO DO: Do we need this for some reason?
+  // CUSTOM: Perform any object initialization here
+  // None needed in this case
 }
 
 
@@ -178,36 +169,11 @@ void PurpleHazeApp::app_conditionalUpdate(bool force) {
 }
 
 Screen* PurpleHazeApp::app_registerScreens() {
-  // CUSTOM: Register any app-specific Screen objects
-  splashScreen = new SplashScreen();
-  homeScreen = new HomeScreen();
-  aqiScreen = new AQIScreen();
-
-  ScreenMgr.registerScreen("Splash", splashScreen);
-  ScreenMgr.registerScreen("Home", homeScreen);
-  ScreenMgr.registerScreen("AQI", aqiScreen);
-  ScreenMgr.setAsHomeScreen(homeScreen);
-
   // CUSTOM: Associate a confirm/cancel buttons with the reboot screen
   screens.rebootScreen->setButtons(hwConfig.advanceButton, hwConfig.previousButton);
 
-  // CUSTOM: Add a sequence of screens that the user can cycle through
-  BaseScreenMgr::ScreenSequence* sequence = new BaseScreenMgr::ScreenSequence;
-  sequence->push_back(homeScreen);
-  sequence->push_back(aqiScreen);
-  sequence->push_back(wtAppImpl->screens.weatherScreen);
-  sequence->push_back(wtAppImpl->screens.forecastFirst3);
-  sequence->push_back(wtAppImpl->screens.forecastLast2);
-  // Add any plugins to the sequence
-  uint8_t nPlugins = pluginMgr.getPluginCount();
-  for (int i = 0; i < nPlugins; i++) {
-    Plugin* p = pluginMgr.getPlugin(i);
-    sequence->push_back(p->getFlexScreen());
-  }
-  sequence->push_back(wtAppImpl->screens.infoScreen);
-  ScreenMgr.setSequence(sequence);
-
-  return splashScreen;
+  // CUSTOM: Register any app-specific Screen objects
+  return appScreens.registerScreens(pluginMgr);
 }
 
 /*------------------------------------------------------------------------------
@@ -226,7 +192,16 @@ Screen* PurpleHazeApp::app_registerScreens() {
  *
  *----------------------------------------------------------------------------*/
 
-void PurpleHazeApp::app_registerButtons() {
+void PurpleHazeApp::app_configureHW() {
+  // CUSTOM: IConfigure/nitialize any app-specific hardware here
+  // At this point, the settings have been read, but almost nothing
+  // else has been done.
+
+  configureDisplay(); // Sets display parameters
+  configurePins();
+  configureIndicators();
+  prepSensors();
+  
   // CUSTOM: Register any physical buttons that are connected
   for (int i = 0; i < hwConfig.nPhysicalButtons; i++) {
     uint8_t pin = hwConfig.physicalButtons[i];
@@ -235,6 +210,8 @@ void PurpleHazeApp::app_registerButtons() {
     }
   }
 
+  // Technically this should be done later, since ScreenMgr.init() hasn't been
+  // called yet.
   ScreenMgr.setSequenceButtons(hwConfig.advanceButton, hwConfig.previousButton);
 }
 
@@ -305,7 +282,7 @@ void PurpleHazeApp::configureDisplay() {
   Display.setDeviceOptions(&hwConfig.displayDeviceOptions);
 }
 
-void PurpleHazeApp::configureNonButtonPins() {
+void PurpleHazeApp::configurePins() {
   // Initialize the synthetic grounds
   for (int i = 0; i < hwConfig.nSyntheticGrounds; i++) {
     uint8_t pin = hwConfig.syntheticGrounds[i];
