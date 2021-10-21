@@ -147,8 +147,8 @@
     }  
 
     function drawChart(range, config) {
-      var getAQI = $.getJSON("http://nrso.local/getHistory?range="+range);
-      var getWeather = $.getJSON("http://nrso.local/getWeatherHistory?range="+range);
+      var getAQI = $.getJSON("/getHistory?range="+range);
+      var getWeather = $.getJSON("/getWeatherHistory?range="+range);
       $.when(getAQI, getWeather)
         .then(function(aqiResult, weatherResult) {
           prepData(config, aqiResult[0], weatherResult[0]);
