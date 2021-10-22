@@ -30,6 +30,7 @@
 #include <sensors/WeatherMgr.h>
 #include <sensors/AQIMgr.h>
 //                                  Local Includes
+#include "src/hardware/HWConfig.h"
 #include "PHSettings.h"
 #include "PHScreenConfig.h"
 #include "src/hardware/SecondarySerial.h"

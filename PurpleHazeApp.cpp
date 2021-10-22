@@ -173,7 +173,7 @@ Screen* PurpleHazeApp::app_registerScreens() {
   screens.rebootScreen->setButtons(hwConfig.advanceButton, hwConfig.previousButton);
 
   // CUSTOM: Register any app-specific Screen objects
-  return appScreens.registerScreens(pluginMgr);
+  return appScreens.registerScreens(pluginMgr, aqiMgr, weatherMgr);
 }
 
 /*------------------------------------------------------------------------------

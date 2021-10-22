@@ -9,7 +9,6 @@
 //                                  WebThingApp
 #include <gui/Display.h>
 //                                  Local Includes
-#include "../../PurpleHazeApp.h"
 //--------------- End:    Includes ---------------------------------------------
 
 

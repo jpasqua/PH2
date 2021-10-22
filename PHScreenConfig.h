@@ -8,13 +8,19 @@
 #ifndef PHScreenConfig_h
 #define PHScreenConfig_h
 
-#include "PurpleHazeApp.h"
-#include "gui/ScreenMgr.h"
+//--------------- Begin:  Includes ---------------------------------------------
+//                                  Core Libraries
+//                                  Third Party Libraries
+//                                  WebThing Includes
 #include <plugins/PluginMgr.h>
+#include <gui/ScreenMgr.h>
+#include <screens/oled/SensorGraphScreen.h>
+//                                  Local Includes
 #include "src/screens/SplashScreen.h"
 #include "src/screens/HomeScreen.h"
 #include "src/screens/AQIScreen.h"
-#include "src/screens/PHGraphScreen.h"
+//--------------- End:    Includes ---------------------------------------------
+
 
 class PHScreens {
 public:
@@ -22,29 +28,41 @@ public:
   HomeScreen*         homeScreen;
   AQIScreen*          aqiScreen;
   AQIGraphScreen*     aqiGraphScreen;
+#if defined(HAS_WEATHER_SENSOR)
   WeatherGraphScreen* weatherGraphScreen;
+#endif
 
-	Screen* registerScreens(PluginMgr& pluginMgr) {
+#if defined(HAS_WEATHER_SENSOR)
+	Screen* registerScreens(PluginMgr& pluginMgr, const AQIMgr& aqiMgr, const WeatherMgr& weatherMgr)
+#else
+	Screen* registerScreens(PluginMgr& pluginMgr, const AQIMgr& aqiMgr)
+#endif
+{
 	  // CUSTOM: Register any app-specific Screen objects
 	  splashScreen = new SplashScreen();
 	  homeScreen = new HomeScreen();
 	  aqiScreen = new AQIScreen();
-	  aqiGraphScreen = new AQIGraphScreen();
-	  weatherGraphScreen = new WeatherGraphScreen();
+	  aqiGraphScreen = new AQIGraphScreen(aqiMgr);
 
-	  ScreenMgr.registerScreen("Splash", splashScreen);
-	  ScreenMgr.registerScreen("Home", homeScreen);
+    ScreenMgr.registerScreen("Home", homeScreen);
+    ScreenMgr.setAsHomeScreen(homeScreen);
 	  ScreenMgr.registerScreen("AQI", aqiScreen);
 	  ScreenMgr.registerScreen("AGraph", aqiGraphScreen);
+    ScreenMgr.registerScreen("Splash", splashScreen);
+
+#if defined(HAS_WEATHER_SENSOR)
+    weatherGraphScreen = new WeatherGraphScreen(weatherMgr);
 	  ScreenMgr.registerScreen("WGraph", weatherGraphScreen);
-	  ScreenMgr.setAsHomeScreen(homeScreen);
+#endif
 
 	  // CUSTOM: Add a sequence of screens that the user can cycle through
 	  BaseScreenMgr::ScreenSequence* sequence = new BaseScreenMgr::ScreenSequence;
 	  sequence->push_back(homeScreen);
 	  sequence->push_back(aqiScreen);
 	  sequence->push_back(aqiGraphScreen);
+#if defined(HAS_WEATHER_SENSOR)
 	  sequence->push_back(weatherGraphScreen);
+#endif
 	  sequence->push_back(wtAppImpl->screens.weatherScreen);
 	  sequence->push_back(wtAppImpl->screens.forecastFirst3);
 	  sequence->push_back(wtAppImpl->screens.forecastLast2);
