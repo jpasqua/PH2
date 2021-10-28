@@ -32,11 +32,9 @@ public:
   WeatherGraphScreen* weatherGraphScreen;
 #endif
 
-#if defined(HAS_WEATHER_SENSOR)
-	Screen* registerScreens(PluginMgr& pluginMgr, const AQIMgr& aqiMgr, const WeatherMgr& weatherMgr)
-#else
-	Screen* registerScreens(PluginMgr& pluginMgr, const AQIMgr& aqiMgr)
-#endif
+	Screen* registerScreens(
+		PHSettings* settings, PluginMgr& pluginMgr,
+		const AQIMgr& aqiMgr, const WeatherMgr& weatherMgr)
 {
 	  // CUSTOM: Register any app-specific Screen objects
 	  splashScreen = new SplashScreen();
@@ -47,33 +45,41 @@ public:
     ScreenMgr.registerScreen("Home", homeScreen);
     ScreenMgr.setAsHomeScreen(homeScreen);
 	  ScreenMgr.registerScreen("AQI", aqiScreen);
-	  ScreenMgr.registerScreen("AGraph", aqiGraphScreen);
+	  ScreenMgr.registerScreen("AQI-Graph", aqiGraphScreen);
     ScreenMgr.registerScreen("Splash", splashScreen);
 
 #if defined(HAS_WEATHER_SENSOR)
     weatherGraphScreen = new WeatherGraphScreen(weatherMgr);
-	  ScreenMgr.registerScreen("WGraph", weatherGraphScreen);
+	  ScreenMgr.registerScreen("Temp-Graph", weatherGraphScreen);
 #endif
 
 	  // CUSTOM: Add a sequence of screens that the user can cycle through
-	  BaseScreenMgr::ScreenSequence* sequence = new BaseScreenMgr::ScreenSequence;
-	  sequence->push_back(homeScreen);
-	  sequence->push_back(aqiScreen);
-	  sequence->push_back(aqiGraphScreen);
+	  auto& sequence = ScreenMgr.sequence;
+    sequence.clear();
+    sequence.push_back(homeScreen);
+	  sequence.push_back(aqiScreen);
+	  sequence.push_back(aqiGraphScreen);
 #if defined(HAS_WEATHER_SENSOR)
-	  sequence->push_back(weatherGraphScreen);
+	  sequence.push_back(weatherGraphScreen);
 #endif
-	  sequence->push_back(wtAppImpl->screens.weatherScreen);
-	  sequence->push_back(wtAppImpl->screens.forecastFirst3);
-	  sequence->push_back(wtAppImpl->screens.forecastLast2);
+	  sequence.push_back(wtAppImpl->screens.weatherScreen);
+	  sequence.push_back(wtAppImpl->screens.forecastFirst3);
+	  sequence.push_back(wtAppImpl->screens.forecastLast2);
 	  // Add any plugins to the sequence
 	  uint8_t nPlugins = pluginMgr.getPluginCount();
 	  for (int i = 0; i < nPlugins; i++) {
 	    Plugin* p = pluginMgr.getPlugin(i);
-	    sequence->push_back(p->getFlexScreen());
+	    sequence.push_back(p->getFlexScreen());
 	  }
-	  sequence->push_back(wtAppImpl->screens.infoScreen);
-	  ScreenMgr.setSequence(sequence);
+	  sequence.push_back(wtAppImpl->screens.infoScreen);
+
+Log.verbose("Screen Sequence");
+for (const Screen* s : sequence) {
+	Log.verbose("%s", s->registeredAs->c_str());
+}
+  // Reconcile the screen list from the settings, with the list of
+  // screens we're actually using.
+  ScreenMgr.reconcileScreenSequence(settings->screenSettings);
 
 	  return splashScreen;
 	}

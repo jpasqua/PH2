@@ -45,7 +45,7 @@ void WeatherSettings::logSettings() {
 
 PHSettings::PHSettings() {
   version = PHSettings::CurrentVersion;
-  maxFileSize = 1024;
+  maxFileSize = 2048;
 }
 
 void PHSettings::fromJSON(const JsonDocument &doc) {
