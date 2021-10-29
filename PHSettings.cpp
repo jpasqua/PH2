@@ -59,7 +59,6 @@ void PHSettings::fromJSON(const JsonDocument &doc) {
 
   weatherSettings.fromJSON(doc);
   WTAppSettings::fromJSON(doc);
-  logSettings();
 }
 
 void PHSettings::toJSON(JsonDocument &doc) {
