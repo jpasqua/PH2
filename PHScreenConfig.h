@@ -46,7 +46,7 @@ public:
     ScreenMgr.setAsHomeScreen(homeScreen);
 	  ScreenMgr.registerScreen("AQI", aqiScreen);
 	  ScreenMgr.registerScreen("AQI-Graph", aqiGraphScreen);
-    ScreenMgr.registerScreen("Splash", splashScreen);
+    ScreenMgr.registerScreen("Splash", splashScreen, true);
 
 #if defined(HAS_WEATHER_SENSOR)
     weatherGraphScreen = new WeatherGraphScreen(weatherMgr);
@@ -73,10 +73,11 @@ public:
 	  }
 	  sequence.push_back(wtAppImpl->screens.infoScreen);
 
-Log.verbose("Screen Sequence");
-for (const Screen* s : sequence) {
-	Log.verbose("%s", s->registeredAs->c_str());
-}
+  // Log.verbose("PHScreens::registerScreens, The default screen sequence is:");
+  // for (const Screen* s : sequence) {
+  // 	Log.verbose("%s", s->name.c_str());
+  // }
+    
   // Reconcile the screen list from the settings, with the list of
   // screens we're actually using.
   ScreenMgr.reconcileScreenSequence(settings->screenSettings);

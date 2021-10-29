@@ -35,7 +35,9 @@ namespace PHWebUI {
       "<a class='w3-bar-item w3-button' href='/ChartPage.html'>"
       "<i class='fa fa-bar-chart'></i> Charts</a>"
       "<a class='w3-bar-item w3-button' href='/displayPHConfig'>"
-      "<i class='fa fa-cog'></i> Configure PH</a>");
+      "<i class='fa fa-cog'></i> Configure PH</a>"
+      "<a class='w3-bar-item w3-button' href='/presentScreenConfig'>"
+      "<i class='fa window-restore'></i> Configure Screens</a>");
 
 
     constexpr uint32_t BusyColor = 0xff88ff;
