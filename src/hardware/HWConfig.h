@@ -39,11 +39,13 @@
 
 // SECTION 3: [BOILERPLATE] Define a list of the predefined hardware configs
 // that we can choose from. If you add a new configuration, list it here.
-#define Config_Custom        1
-#define Config_EmbeddedOLED  2
-#define Config_D1Mini        3
-#define Config_ESP32Mini     4
-#define Config_ESP32WithOLED 5
+#define Config_Custom         1
+#define Config_EmbeddedOLED   2
+#define Config_D1Mini         3
+#define Config_ESP32Mini      4
+#define Config_ESP32WithOLED  5
+#define Config_D1Mini_MOCK    6
+#define Config_D1Mini_MOCK_ND 7
 
 // SECTION 4: [CUSTOMIZE] Choose a specific configuration
 #define SelectedConfig Config_D1Mini_MOCK
@@ -90,6 +92,33 @@
 
   // ----- Display Type
   constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SH1106;
+  constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
+
+  // ----- Buttons
+  constexpr uint8_t physicalButtons[] = { D6 };
+  constexpr uint8_t syntheticGrounds[] = { D8 };
+
+  // ----- Air Quality Sensor
+  #define USE_SW_SERIAL 1
+  constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
+  constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+
+  // ----- Indicators
+  constexpr uint8_t NEOPIXEL_PIN = UNUSED_PIN;
+
+#elif (SelectedConfig == Config_D1Mini_MOCK_ND)
+  /*------------------------------------------------------------------------------
+   *
+   * Config Info for D1Mini with no display and no AQ sensor
+   *
+   *----------------------------------------------------------------------------*/
+
+  // ----- I2C Settings
+  constexpr uint8_t SDA_PIN = D2;
+  constexpr uint8_t SCL_PIN = D5;
+
+  // ----- Display Type
+  constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::NONE;
   constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
 
   // ----- Buttons

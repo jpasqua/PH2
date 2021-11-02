@@ -1,6 +1,12 @@
 #ifndef SensorConfig_h
 #define SensorConfig_h
 
+/*------------------------------------------------------------------------------
+ *
+ * Weather Sensors
+ *
+ *----------------------------------------------------------------------------*/
+
 // The types of weather sensor readings. The values of these constants
 // must remain in sync with the values defined in WeatherSensor.h
 #define READ_TEMP (1 << 0)
@@ -35,8 +41,39 @@ constexpr uint8_t BME_I2C_ADDR = 0x76;
 // #define DHT22_READINGS    (0         | READ_HUMI |           )
 // #define DS18B20_READINGS  (READ_TEMP | 0         | 0         )
 
-#if defined(BME280_READINGS) || defined (DHT22_READINGS) || defined(DHT22_READINGS)
+#if defined(BME280_READINGS) || defined (DHT22_READINGS) || defined(DS18B20_READINGS)
 	#define HAS_WEATHER_SENSOR
+#endif
+
+/*------------------------------------------------------------------------------
+ *
+ * Air Quality Sensors
+ *
+ *----------------------------------------------------------------------------*/
+
+// The types of air quality sensor readings.
+#define PARTICULATE_LEVELS 	(1 << 0)
+#define CO2_LEVELS		 			(1 << 1)
+
+// For reference, these are the types of readings that are available
+// from each of the sensor types
+#define PMS5003_AVAIL_READINGS   (PARTICULATE_LEVELS)
+
+#define PMS5003_READINGS PMS5003_AVAIL_READINGS
+
+#if defined(PMS5003_READINGS)
+	#define HAS_AQI_SENSOR
+#endif
+
+
+/*------------------------------------------------------------------------------
+ *
+ * Sanity Checks
+ *
+ *----------------------------------------------------------------------------*/
+
+#if !defined(HAS_WEATHER_SENSOR) && !defined(HAS_AQI_SENSOR)
+	#error("No sensors defined")
 #endif
 
 #endif	// SensorConfig_h
