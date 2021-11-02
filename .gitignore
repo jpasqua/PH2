@@ -7,3 +7,4 @@
 data/aqihist.json
 data/wthrhist.json
 **settings.json
+resources/prepForUpload.bash
