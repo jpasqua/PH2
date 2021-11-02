@@ -133,7 +133,9 @@ void PurpleHazeApp::app_loop() {
   // Note that app_conditionalUpdate() is called for you automatically on a
   // periodic basis, so no need to do that here.
 
+#if defined(HAS_AQI_SENSOR)
   aqiMgr.loop();
+#endif
 }
 
 void PurpleHazeApp::app_initClients() {
@@ -148,22 +150,24 @@ void PurpleHazeApp::app_initClients() {
 
 void PurpleHazeApp::app_conditionalUpdate(bool force) {
   // CUSTOM: Update any app-specific clients
-  static uint32_t lastTimestamp = 0;
 
-  const AQIReadings& aqiReadings = aqiMgr.getLastReadings();
-  if (aqiReadings.timestamp != lastTimestamp) {
-    busyIndicator->setColor(0, 255, 0);
-    uint16_t quality = aqiMgr.derivedAQI(aqiReadings.env.pm25);
-    qualityIndicator->setColor(aqiMgr.colorForQuality(quality));
-    lastTimestamp = aqiReadings.timestamp;
-    busyIndicator->off();
-  }
+  (void)force;
+  #if defined(HAS_AQI_SENSOR)
+    static uint32_t lastTimestamp = 0;
+
+    const AQIReadings& aqiReadings = aqiMgr.getLastReadings();
+    if (aqiReadings.timestamp != lastTimestamp) {
+      busyIndicator->setColor(0, 255, 0);
+      uint16_t quality = aqiMgr.derivedAQI(aqiReadings.env.pm25);
+      qualityIndicator->setColor(aqiMgr.colorForQuality(quality));
+      lastTimestamp = aqiReadings.timestamp;
+      busyIndicator->off();
+    }
+  #endif
 
   #if defined(HAS_WEATHER_SENSOR)
     weatherMgr.takeReadings(force);
-  #else
-    (void)force;
-  #endif  // HAS_WEATHER_SENSOR
+  #endif
 
   BlynkMgr::publish();
 }
@@ -243,8 +247,10 @@ void PurpleHazeApp::prepBlynk() {
   #endif
 
   // ----- Register the AQI Publisher
-  AQIBlynkPublisher* ap = new AQIBlynkPublisher(&aqiMgr);
-  BlynkMgr::registerPublisher(ap);
+  #if defined(HAS_AQI_SENSOR)
+    AQIBlynkPublisher* ap = new AQIBlynkPublisher(&aqiMgr);
+    BlynkMgr::registerPublisher(ap);
+  #endif
 }  
 
 //
@@ -252,15 +258,15 @@ void PurpleHazeApp::prepBlynk() {
 //
 
 void PurpleHazeApp::prepSensors() {
-  // Start with the Air Quality Sensor
-  streamToSensor.begin();
-
-  if (!aqiMgr.init(streamToSensor.s, sensorIndicator)) {
-    Log.error("Unable to connect to Air Quality Sensor!");
-    qualityIndicator->setColor(255, 0, 0);
-    sensorIndicator->setColor(255, 0, 0);
-    busyIndicator->setColor(255, 0, 0);
-  }
+  #if defined(HAS_AQI_SENSOR)
+    streamToSensor.begin();
+    if (!aqiMgr.init(streamToSensor.s, sensorIndicator)) {
+      Log.error("Unable to connect to Air Quality Sensor!");
+      qualityIndicator->setColor(255, 0, 0);
+      sensorIndicator->setColor(255, 0, 0);
+      busyIndicator->setColor(255, 0, 0);
+    }
+  #endif
 
   #if defined(HAS_WEATHER_SENSOR)
     auto weatherBusyCallBack = [this](bool busy) {
