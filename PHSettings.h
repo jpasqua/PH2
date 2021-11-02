@@ -24,6 +24,21 @@ public:
     String temp = "#ff00ff";
     String avg = "#4e7a27";
   } chartColors;
+  uint8_t graphRange = 0;
+  void fromJSON(const JsonDocument &doc);
+  void toJSON(JsonDocument &doc);
+  void logSettings();
+};
+
+class AQISettings {
+public:
+  struct {
+    String pm10 = "#e32400";
+    String pm25 = "#4e7a27";
+    String pm100 = "#0042aa";
+    String aqi = "#f00f88";
+  } chartColors;
+  uint8_t graphRange = 0;
   void fromJSON(const JsonDocument &doc);
   void toJSON(JsonDocument &doc);
   void logSettings();
@@ -40,14 +55,9 @@ public:
   // ----- Settings
   String  description = "Air Quality Sensor"; // User's description of their AQ Sensor
   String  blynkAPIKey = "";                   // Your API Key from Blynk
-  struct {
-    String pm10 = "#e32400";
-    String pm25 = "#4e7a27";
-    String pm100 = "#0042aa";
-    String aqi = "#f00f88";
-  } chartColors;
   uint8_t iBright = 50;                       // Brightness of indicators (0-100%)
   
+  AQISettings aqiSettings;
   WeatherSettings weatherSettings;
 
 private:

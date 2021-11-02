@@ -24,6 +24,8 @@ void WeatherSettings::fromJSON(const JsonDocument &doc) {
   humiCorrection = doc["wthr"]["humiCorrection"];
   chartColors.temp = String(doc["wthr"]["chartColors"]["temp"]|"#4e7a27");
   chartColors.avg = String(doc["wthr"]["chartColors"]["avg"]|"#ff00ff");
+  graphRange = doc["wthr"]["graphRange"];
+  graphRange = (graphRange > 2) ? 2 : graphRange;
 }
 
 void WeatherSettings::toJSON(JsonDocument &doc) {
@@ -31,6 +33,7 @@ void WeatherSettings::toJSON(JsonDocument &doc) {
   doc["wthr"]["humiCorrection"] = humiCorrection;
   doc["wthr"]["chartColors"]["temp"] = chartColors.temp;
   doc["wthr"]["chartColors"]["avg"] = chartColors.avg;
+  doc["wthr"]["graphRange"] = graphRange;
 }
 
 void WeatherSettings::logSettings() {
@@ -39,6 +42,33 @@ void WeatherSettings::logSettings() {
   Log.verbose(F("  humiCorrection = %F"), humiCorrection);
   Log.verbose(F("  chartColors.temp = %s"), chartColors.temp.c_str());
   Log.verbose(F("  chartColors.avg = %s"), chartColors.avg.c_str());
+  Log.verbose(F("  Graph Range = %d"), graphRange);
+}
+
+void AQISettings::fromJSON(const JsonDocument &doc) {
+  chartColors.pm10 = String(doc["aqi"]["chartColors"]["pm10"]|"#e32400");
+  chartColors.pm25 = String(doc["aqi"]["chartColors"]["pm25"]|"#4e7a27");
+  chartColors.pm100 = String(doc["aqi"]["chartColors"]["pm100"]|"#0042aa");
+  chartColors.aqi = String(doc["aqi"]["chartColors"]["aqi"]|"#f00f88");
+  graphRange = doc["aqi"]["graphRange"];
+  graphRange = (graphRange > 2) ? 2 : graphRange;
+}
+
+void AQISettings::toJSON(JsonDocument &doc) {
+  doc["aqi"]["chartColors"]["pm10"] = chartColors.pm10;
+  doc["aqi"]["chartColors"]["pm25"] = chartColors.pm25;
+  doc["aqi"]["chartColors"]["pm100"] = chartColors.pm100;
+  doc["aqi"]["chartColors"]["aqi"] = chartColors.aqi;
+  doc["aqi"]["graphRange"] = graphRange;
+}
+
+void AQISettings::logSettings() {
+  Log.verbose(F("AQI Settings"));
+  Log.verbose(F("  chartColors.pm10 = %s"), chartColors.pm10.c_str());
+  Log.verbose(F("  chartColors.pm25 = %s"), chartColors.pm25.c_str());
+  Log.verbose(F("  chartColors.pm100 = %s"), chartColors.pm100.c_str());
+  Log.verbose(F("  chartColors.aqi = %s"), chartColors.aqi.c_str());
+  Log.verbose(F("  Graph Range = %d"), graphRange);
 }
 
 
@@ -52,11 +82,8 @@ void PHSettings::fromJSON(const JsonDocument &doc) {
   description = doc["description"].as<String>();
   blynkAPIKey = String(doc["blynkAPIKey"]|"");
   iBright = doc[F("iBright")];
-  chartColors.pm10 = String(doc["chartColors"]["pm10"]|"#e32400");
-  chartColors.pm25 = String(doc["chartColors"]["pm25"]|"#4e7a27");
-  chartColors.pm100 = String(doc["chartColors"]["pm100"]|"#0042aa");
-  chartColors.aqi = String(doc["chartColors"]["aqi"]|"#f00f88");
 
+  aqiSettings.fromJSON(doc);
   weatherSettings.fromJSON(doc);
   WTAppSettings::fromJSON(doc);
 }
@@ -65,11 +92,8 @@ void PHSettings::toJSON(JsonDocument &doc) {
   doc["description"] = description;
   doc["blynkAPIKey"] = blynkAPIKey;
   doc[F("iBright")] = iBright;
-  doc["chartColors"]["pm10"] = chartColors.pm10;
-  doc["chartColors"]["pm25"] = chartColors.pm25;
-  doc["chartColors"]["pm100"] = chartColors.pm100;
-  doc["chartColors"]["aqi"] = chartColors.aqi;
 
+  aqiSettings.toJSON(doc);
   weatherSettings.toJSON(doc);
   WTAppSettings::toJSON(doc);
 }
@@ -79,10 +103,7 @@ void PHSettings::logSettings() {
   Log.verbose(F("  description = %s"), description.c_str());
   Log.verbose(F("  blynkAPIKey = %s"), blynkAPIKey.c_str());
   Log.verbose(F("  indicator brightness: %d"), iBright);
-  Log.verbose(F("  chartColors.pm10 = %s"), chartColors.pm10.c_str());
-  Log.verbose(F("  chartColors.pm25 = %s"), chartColors.pm25.c_str());
-  Log.verbose(F("  chartColors.pm100 = %s"), chartColors.pm100.c_str());
-  Log.verbose(F("  chartColors.aqi = %s"), chartColors.aqi.c_str());
+  aqiSettings.logSettings();
   weatherSettings.logSettings();
   WTAppSettings::logSettings();
 }
