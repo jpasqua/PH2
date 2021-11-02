@@ -29,6 +29,12 @@
         <tr><td>PM 10.0</td><td></label><input  type='color' name='pm100Color' value='%PM100_CLR%'></td></tr>
         <tr><td>AQI</td><td></label><input  type='color' name='aqiColor' value='%AQI_CLR%'></td></tr>
         </table>
+        <p>Graph Screen Range
+        <select class='w3-option w3-padding' name='aqiGraphRange'>
+          <option value='0' %AG0%>1 Hour</option>
+          <option value='1' %AG1%>1 Day</option>
+          <option value='2' %AG2%>1 Week</option>
+        </select></p>
       </div>
     </div>
   </div>
@@ -47,11 +53,17 @@
         <input class='w3-input w3-border' type='text' name='humiCorrection' value='%HUMI_CORRECT%' maxlength='12'>
       </div>
       <div class='w3-row w3-margin-top w3-margin-bottom'>
-        Chart Colors
+        Web Chart Colors
         <table>
           <tr><td>Temperature</td><td></label><input  type='color' name='tempColor' value='%TEMP_CLR%'></td></tr>
           <tr><td>Moving Average</td><td></label><input  type='color' name='avgColor' value='%AVG_CLR%'></td></tr>
         </table>
+        <p>Graph Screen Range
+        <select class='w3-option w3-padding' name='weatherGraphRange'>
+          <option value='0' %WG0%>1 Hour</option>
+          <option value='1' %WG1%>1 Day</option>
+          <option value='2' %WG2%>1 Week</option>
+        </select></p>
       </div>
     </div>
   </div>
@@ -60,6 +72,6 @@
 </form>
 
   <script>
-    showHide('WeatherSettings', %WTHR_VIS%);
-    showHide('AQISettings', true);
+    showHide('WeatherSettings', %HAS_TEMP%);
+    showHide('AQISettings', %HAS_AQI%);
   </script>
