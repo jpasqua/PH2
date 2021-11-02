@@ -26,8 +26,10 @@ class PHScreens {
 public:
   SplashScreen*       splashScreen;
   HomeScreen*         homeScreen;
+#if defined(HAS_AQI_SENSOR)
   AQIScreen*          aqiScreen;
   AQIGraphScreen*     aqiGraphScreen;
+#endif
 #if defined(HAS_WEATHER_SENSOR)
   WeatherGraphScreen* weatherGraphScreen;
 #endif
@@ -39,26 +41,36 @@ public:
 	  // CUSTOM: Register any app-specific Screen objects
 	  splashScreen = new SplashScreen();
 	  homeScreen = new HomeScreen();
-	  aqiScreen = new AQIScreen();
-	  aqiGraphScreen = new AQIGraphScreen(aqiMgr);
 
     ScreenMgr.registerScreen("Home", homeScreen);
     ScreenMgr.setAsHomeScreen(homeScreen);
-	  ScreenMgr.registerScreen("AQI", aqiScreen);
-	  ScreenMgr.registerScreen("AQI-Graph", aqiGraphScreen);
     ScreenMgr.registerScreen("Splash", splashScreen, true);
 
+#if defined(HAS_AQI_SENSOR)
+	  aqiScreen = new AQIScreen();
+	  aqiGraphScreen = new AQIGraphScreen(aqiMgr);
+	  ScreenMgr.registerScreen("AQI", aqiScreen);
+	  ScreenMgr.registerScreen("AQI-Graph", aqiGraphScreen);
+	  aqiGraphScreen->selectBuffer(settings->aqiSettings.graphRange);
+#else
+	  (void)aqiMgr;
+#endif
 #if defined(HAS_WEATHER_SENSOR)
     weatherGraphScreen = new WeatherGraphScreen(weatherMgr);
 	  ScreenMgr.registerScreen("Temp-Graph", weatherGraphScreen);
+	  weatherGraphScreen->selectBuffer(settings->weatherSettings.graphRange);
+#else
+	  (void)weatherMgr;
 #endif
 
 	  // CUSTOM: Add a sequence of screens that the user can cycle through
 	  auto& sequence = ScreenMgr.sequence;
     sequence.clear();
     sequence.push_back(homeScreen);
+#if defined(HAS_AQI_SENSOR)
 	  sequence.push_back(aqiScreen);
 	  sequence.push_back(aqiGraphScreen);
+#endif
 #if defined(HAS_WEATHER_SENSOR)
 	  sequence.push_back(weatherGraphScreen);
 #endif
