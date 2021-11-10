@@ -46,9 +46,10 @@
 #define Config_ESP32WithOLED  5
 #define Config_D1Mini_MOCK    6
 #define Config_D1Mini_MOCK_ND 7
+#define Config_PH2_BOARD      8
 
 // SECTION 4: [CUSTOMIZE] Choose a specific configuration
-#define SelectedConfig Config_D1Mini_MOCK
+#define SelectedConfig Config_PH2_BOARD
 
 // SECTION 5: The definitions of the available configurations
 // Add new configs below if you add an option
@@ -211,6 +212,36 @@
 
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = D2;
+
+#elif (SelectedConfig == Config_PH2_BOARD)
+  /*------------------------------------------------------------------------------
+   *
+   * Config Info for Purple Haze v2 Board with D1 Mini
+   * (No AQI and No Display at the moment)
+   *
+   *----------------------------------------------------------------------------*/
+
+  // ----- I2C Settings
+  constexpr uint8_t SDA_PIN = D3;
+  constexpr uint8_t SCL_PIN = D5;
+
+  // ----- Display Type
+  constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::NONE;
+  //constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SH1106;
+  constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
+
+  // ----- Buttons
+  constexpr uint8_t physicalButtons[] = { D4, D7 };
+  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+
+  // ----- Air Quality Sensor
+  #define USE_SW_SERIAL 1
+  constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
+  constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+
+  // ----- Indicators
+  constexpr uint8_t NEOPIXEL_PIN = D2;
+
 
 #elif (SelectedConfig ==  Config_Custom)
   /*------------------------------------------------------------------------------
