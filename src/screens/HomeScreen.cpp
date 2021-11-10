@@ -103,7 +103,7 @@ void HomeScreen::drawReadings() {
   #if defined(HAS_AQI_SENSOR) && defined(HAS_WEATHER_SENSOR)
     // AQI    TEMP        HUMI
     readings[0] = phApp->aqiMgr.derivedAQI(phApp->aqiMgr.getLastReadings().env.pm25);
-    readings[1] = phApp->weatherMgr.getLastReadings().temp;
+    readings[1] = Output::temp(phApp->weatherMgr.getLastReadings().temp);
     readings[2] = phApp->weatherMgr.getLastReadings().humidity;
   #elif defined(HAS_AQI_SENSOR)
     // AQI    OWM_TEMP    OWM_HUMI
@@ -113,7 +113,7 @@ void HomeScreen::drawReadings() {
   #else
     // TEMP    HUMI       BARO
     auto wReadings = phApp->weatherMgr.getLastReadings();
-    readings[0] = wReadings.temp;
+    readings[0] = Output::temp(wReadings.temp);
     readings[1] = wReadings.humidity;
     readings[2] = wReadings.pressure;
   #endif
