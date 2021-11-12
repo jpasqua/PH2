@@ -30,7 +30,7 @@
 
 // SECTION 1: Select the general class of Display Device we're using.
 // The available types are defined in DeviceTypes.h
-// This config provides options based on DEVICE_TYPE_OLED.
+// This config provides options based on DEVICE_TYPE_OLED, including NONE.
 #define DEVICE_TYPE DEVICE_TYPE_OLED
 
 // SECTION 2: [BOILERPLATE] Include Display.h to get the list of specific device
@@ -217,7 +217,7 @@
   /*------------------------------------------------------------------------------
    *
    * Config Info for Purple Haze v2 Board with D1 Mini
-   * (No AQI and No Display at the moment)
+   * (No AQI at the moment)
    *
    *----------------------------------------------------------------------------*/
 
@@ -226,8 +226,8 @@
   constexpr uint8_t SCL_PIN = D5;
 
   // ----- Display Type
-  constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::NONE;
-  //constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SH1106;
+  // constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::NONE;
+  constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SH1106;
   constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
 
   // ----- Buttons
@@ -298,8 +298,8 @@ public:
 constexpr HWConfig hwConfig {
   { SCL_PIN, SDA_PIN },
   { DISPLAY_DRIVER, SCL_PIN, SDA_PIN, DISPLAY_I2C_ADDRESS },
-  physicalButtons, ARRAY_SIZE(physicalButtons),  
-  syntheticGrounds, ARRAY_SIZE(syntheticGrounds),
+  physicalButtons, countof(physicalButtons),  
+  syntheticGrounds, countof(syntheticGrounds),
   physicalButtons[0], UNUSED_PIN
 };
 
