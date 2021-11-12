@@ -165,12 +165,12 @@
 
     function drawChart(range, config) {
       if (hasAQI) {
-        var getAQI = $.getJSON("http://192.168.1.53/getHistory?range="+range);
+        var getAQI = $.getJSON("/getHistory?range="+range);
       } else {
         var getAQI = function() { return [0]; };
       }
       if (hasTemp) {
-        var getWeather = $.getJSON("http://192.168.1.53/getWeatherHistory?range="+range);
+        var getWeather = $.getJSON("/getWeatherHistory?range="+range);
       } else {
         var getWeather = function() { return [0]; };
       }
