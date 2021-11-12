@@ -276,4 +276,4 @@ const uint8 AQI_Level5[] PROGMEM = {
 #include <BPABasics.h>
 
 constexpr const uint8* AQILevels[] {AQI_Level0, AQI_Level1, AQI_Level2, AQI_Level3, AQI_Level4, AQI_Level5};
-constexpr uint8_t N_AQI_ICONS = ARRAY_SIZE(AQILevels);
+constexpr uint8_t N_AQI_ICONS = countof(AQILevels);
