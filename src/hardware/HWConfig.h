@@ -20,6 +20,7 @@
 //
 
 #include <Arduino.h>
+#include <Adafruit_NeoPixel.h>
 #include <BPABasics.h>
 #include "SensorConfig.h"
 #include <gui/devices/DeviceTypes.h>
@@ -79,6 +80,7 @@
 
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = D2;
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_GRB + NEO_KHZ800;
 
 #elif (SelectedConfig == Config_D1Mini_MOCK)
   /*------------------------------------------------------------------------------
@@ -133,6 +135,7 @@
 
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = UNUSED_PIN;
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_GRB + NEO_KHZ800;
 
 #elif (SelectedConfig == Config_ESP32Mini)
   /*------------------------------------------------------------------------------
@@ -159,6 +162,7 @@
 
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = 21;
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_GRB + NEO_KHZ800;
 
 #elif (SelectedConfig == Config_ESP32WithOLED)
   /*------------------------------------------------------------------------------
@@ -185,6 +189,7 @@
 
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = 21;
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_GRB + NEO_KHZ800;
 
 #elif (SelectedConfig == Config_EmbeddedOLED)
   /*------------------------------------------------------------------------------
@@ -212,6 +217,7 @@
 
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = D2;
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_GRB + NEO_KHZ800;
 
 #elif (SelectedConfig == Config_PH2_BOARD)
   /*------------------------------------------------------------------------------
@@ -231,16 +237,17 @@
   constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { D4, D7 };
+  constexpr uint8_t physicalButtons[] = { D7, D4 };
   constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
 
   // ----- Air Quality Sensor
   #define USE_SW_SERIAL 1
-  constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-  constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+  constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN; // D6
+  constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN; // D8
 
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = D2;
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_GRB + NEO_KHZ800;
 
 
 #elif (SelectedConfig ==  Config_Custom)
@@ -271,7 +278,7 @@
   // If there are NeoPixels connected to use as status indicators, set the pin
   // that drives the data line. If no NeoPixels are connected, set the pin to -1
   constexpr uint8_t NEOPIXEL_PIN = D2;
-
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_GRB + NEO_KHZ800;
 #else
     #error "Please set SelectedConfig"
 #endif
@@ -300,7 +307,7 @@ constexpr HWConfig hwConfig {
   { DISPLAY_DRIVER, SCL_PIN, SDA_PIN, DISPLAY_I2C_ADDRESS },
   physicalButtons, countof(physicalButtons),  
   syntheticGrounds, countof(syntheticGrounds),
-  physicalButtons[0], UNUSED_PIN
+  physicalButtons[0], physicalButtons[1]
 };
 
 #endif  // HWConfig_h
