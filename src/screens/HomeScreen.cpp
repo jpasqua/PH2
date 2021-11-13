@@ -69,6 +69,16 @@ void HomeScreen::display(bool) {
 
 void HomeScreen::processPeriodicActivity() {
   if (compositeTime != compose(hour(), minute())) display(true);
+  uint32_t mostRecentReadingTime;
+  #if defined(HAS_AQI_SENSOR) && defined(HAS_WEATHER_SENSOR)
+    mostRecentReadingTime = max(phApp->weatherMgr.getLastReadings().timestamp,
+                                phApp->aqiMgr.getLastReadings().timestamp);
+  #elif defined(HAS_AQI_SENSOR)
+    mostRecentReadingTime = phApp->aqiMgr.getLastReadings().timestamp;
+  #else
+    mostRecentReadingTime = phApp->weatherMgr.getLastReadings().timestamp;
+  #endif
+  if (mostRecentReadingTime > lastReadingTime) display(true);
 }
 
 // ----- Private Functions
@@ -105,17 +115,22 @@ void HomeScreen::drawReadings() {
     readings[0] = phApp->aqiMgr.derivedAQI(phApp->aqiMgr.getLastReadings().env.pm25);
     readings[1] = Output::temp(phApp->weatherMgr.getLastReadings().temp);
     readings[2] = phApp->weatherMgr.getLastReadings().humidity;
+    lastReadingTime = max(
+      phApp->weatherMgr.getLastReadings().timestamp,
+      phApp->aqiMgr.getLastReadings().timestamp);
   #elif defined(HAS_AQI_SENSOR)
     // AQI    OWM_TEMP    OWM_HUMI
     readings[0] = phApp->aqiMgr.derivedAQI(phApp->aqiMgr.getLastReadings().env.pm25);
     readings[1] = phApp->owmClient->weather.readings.temp;
     readings[2] = phApp->owmClient->weather.readings.humidity;
+    lastReadingTime = phApp->aqiMgr.getLastReadings().timestamp;
   #else
     // TEMP    HUMI       BARO
     auto wReadings = phApp->weatherMgr.getLastReadings();
     readings[0] = Output::temp(wReadings.temp);
     readings[1] = wReadings.humidity;
     readings[2] = wReadings.pressure;
+    lastReadingTime = phApp->weatherMgr.getLastReadings().timestamp;
   #endif
 
 

@@ -23,6 +23,7 @@ private:
   void drawReadings();
 
   uint16_t compositeTime = 0;
+  uint32_t lastReadingTime = 0;
   Label *labels = nullptr;
 };
 
