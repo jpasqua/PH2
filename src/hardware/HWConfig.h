@@ -247,7 +247,7 @@
 
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = D2;
-  constexpr neoPixelType NEOPIXEL_TYPE = NEO_GRB + NEO_KHZ800;
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_RGB + NEO_KHZ800;
 
 
 #elif (SelectedConfig ==  Config_Custom)
