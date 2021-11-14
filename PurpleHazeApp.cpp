@@ -128,6 +128,7 @@ void PurpleHazeApp::app_initWebUI() {
   PHWebUI::init();
 }
 
+
 void PurpleHazeApp::app_loop() {
   // CUSTOM: Perform any app-specific periodic activity
   // Note that app_conditionalUpdate() is called for you automatically on a
@@ -320,7 +321,7 @@ void PurpleHazeApp::configureIndicators() {
     npi = new NeoPixelIndicator(); npi->begin(indicators, 2); busyIndicator = npi;
   }
   qualityIndicator->setColor(0x969697);  // No data available yet
-  sensorIndicator->off();  // No data available yet
-  busyIndicator->off();  // No data available yet
+  sensorIndicator->off();
+  busyIndicator->off();
 }
 
