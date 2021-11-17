@@ -38,9 +38,26 @@
     }
 
     if (hasAQI) {
+      var onlyTempVisible = false;
+
+      Chart.pluginService.register({
+        beforeRender: function (chart, options) {
+          if (hasTemp && hasAQI) {
+            if (!chart.isDatasetVisible(3) && !chart.isDatasetVisible(2) &&
+                !chart.isDatasetVisible(1) && !chart.isDatasetVisible(0)) {
+              onlyTempVisible = true;
+            }
+            else onlyTempVisible = false;
+          }
+          else onlyTempVisible = false;
+        }
+      });
+
       Chart.pluginService.register({
         beforeDraw: function (chart, easing) {
           if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+            if (!hasAQI || onlyTempVisible) return;
+
             var helpers = Chart.helpers;
             var ctx = chart.chart.ctx;
             var chartArea = chart.chartArea;
@@ -49,19 +66,23 @@
             ctx.save();
             var done = false;
             for (var y = 50; y <= 500 && !done; y += 50) {
-              var yPixel = yScale.getPixelForValue(y)
+              var yPixel = yScale.getPixelForValue(y);
               if (yPixel <= chartArea.top) { yPixel = chartArea.top; done = true; }
-              ctx.fillStyle = colorBands[y/50-1];
               var lower = Math.min(yScale.getPixelForValue(y-50), chartArea.bottom)
-              var ht = yPixel - lower
-              ctx.fillRect(chartArea.left, lower, chartArea.right - chartArea.left, ht);
+              var ht = yPixel - lower;
+              if (ht < 0) {
+                ctx.fillStyle = colorBands[y/50-1];
+                ctx.fillRect(chartArea.left, lower, chartArea.right - chartArea.left, ht);
+              }
             }
             ctx.restore();
+            console.log("got here")
+            // return false;
           }
         }
       });
     }
-
+    
     function createOptions(theTitle) {
       var options = {
         responsive: true, title: { display: true, text: theTitle, fontSize:16 },
