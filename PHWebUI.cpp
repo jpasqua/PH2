@@ -350,9 +350,12 @@ namespace PHWebUI {
 #endif
         phSettings->write();
 
-        // The description MAY have changed. Update the title just in case
         phApp->setIndicatorBrightness(phSettings->iBright);
-        WebUI::setTitle(phSettings->description+" ("+WebThing::settings.hostname+")");
+        // The description MAY have changed. Update the title just in case
+        if (phSettings->description.length() != 0) {
+          WebUI::setTitle(phSettings->description+" ("+WebThing::settings.hostname+")");
+        }
+
         WebUI::redirectHome();
       };
 
@@ -382,6 +385,10 @@ namespace PHWebUI {
     WebUI::registerHandler("/getHistory",         Endpoints::getHistory);
     WebUI::registerHandler("/getWeatherHistory",  Endpoints::getWeatherHistory);
     WebUI::registerHandler("/getAQI",             Endpoints::getAQI);
+
+    if (phSettings->description.length() != 0) {
+      WebUI::setTitle(phSettings->description+" ("+WebThing::settings.hostname+")");
+    }
   }
 
 
