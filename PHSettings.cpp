@@ -23,7 +23,7 @@ void WeatherSettings::fromJSON(const JsonDocument &doc) {
   tempCorrection = doc["wthr"]["tempCorrection"];
   humiCorrection = doc["wthr"]["humiCorrection"];
   chartColors.temp = String(doc["wthr"]["chartColors"]["temp"]|"#4e7a27");
-  chartColors.avg = String(doc["wthr"]["chartColors"]["avg"]|"#ff00ff");
+  chartColors.humi = String(doc["wthr"]["chartColors"]["humi"]|"#ff00ff");
   graphRange = doc["wthr"]["graphRange"];
   graphRange = (graphRange > 2) ? 2 : graphRange;
 }
@@ -32,7 +32,7 @@ void WeatherSettings::toJSON(JsonDocument &doc) {
   doc["wthr"]["tempCorrection"] = tempCorrection;
   doc["wthr"]["humiCorrection"] = humiCorrection;
   doc["wthr"]["chartColors"]["temp"] = chartColors.temp;
-  doc["wthr"]["chartColors"]["avg"] = chartColors.avg;
+  doc["wthr"]["chartColors"]["humi"] = chartColors.humi;
   doc["wthr"]["graphRange"] = graphRange;
 }
 
@@ -41,32 +41,23 @@ void WeatherSettings::logSettings() {
   Log.verbose(F("  tempCorrection = %F"), tempCorrection);
   Log.verbose(F("  humiCorrection = %F"), humiCorrection);
   Log.verbose(F("  chartColors.temp = %s"), chartColors.temp.c_str());
-  Log.verbose(F("  chartColors.avg = %s"), chartColors.avg.c_str());
+  Log.verbose(F("  chartColors.humi = %s"), chartColors.humi.c_str());
   Log.verbose(F("  Graph Range = %d"), graphRange);
 }
 
 void AQISettings::fromJSON(const JsonDocument &doc) {
-  chartColors.pm10 = String(doc["aqi"]["chartColors"]["pm10"]|"#e32400");
-  chartColors.pm25 = String(doc["aqi"]["chartColors"]["pm25"]|"#4e7a27");
-  chartColors.pm100 = String(doc["aqi"]["chartColors"]["pm100"]|"#0042aa");
   chartColors.aqi = String(doc["aqi"]["chartColors"]["aqi"]|"#f00f88");
   graphRange = doc["aqi"]["graphRange"];
   graphRange = (graphRange > 2) ? 2 : graphRange;
 }
 
 void AQISettings::toJSON(JsonDocument &doc) {
-  doc["aqi"]["chartColors"]["pm10"] = chartColors.pm10;
-  doc["aqi"]["chartColors"]["pm25"] = chartColors.pm25;
-  doc["aqi"]["chartColors"]["pm100"] = chartColors.pm100;
   doc["aqi"]["chartColors"]["aqi"] = chartColors.aqi;
   doc["aqi"]["graphRange"] = graphRange;
 }
 
 void AQISettings::logSettings() {
   Log.verbose(F("AQI Settings"));
-  Log.verbose(F("  chartColors.pm10 = %s"), chartColors.pm10.c_str());
-  Log.verbose(F("  chartColors.pm25 = %s"), chartColors.pm25.c_str());
-  Log.verbose(F("  chartColors.pm100 = %s"), chartColors.pm100.c_str());
   Log.verbose(F("  chartColors.aqi = %s"), chartColors.aqi.c_str());
   Log.verbose(F("  Graph Range = %d"), graphRange);
 }

@@ -17,11 +17,13 @@
   <br>
 
   <script>
-    const color_temp = '%TMP_CLR%';
+    const color_temp = '%TEMP_CLR%';
+    const color_humi = '%HUMI_CLR%';
     const color_aqi = '%AQI_CLR%';
     const useMetric = ('%USE_METRIC%' == 'checked');
     const hasAQI = %HAS_AQI%;
     const hasTemp = %HAS_TEMP%;
+    const hasHumi = %HAS_HUMI%
 
     const colorBands = [
       '#D9F8D2', '#FFFFD6', '#FBE0CE', '#FACCC9', '#EFB2C0',
@@ -42,13 +44,7 @@
 
       Chart.pluginService.register({
         beforeRender: function (chart, options) {
-          if (hasTemp && hasAQI) {
-            if (!chart.isDatasetVisible(3) && !chart.isDatasetVisible(2) &&
-                !chart.isDatasetVisible(1) && !chart.isDatasetVisible(0)) {
-              onlyTempVisible = true;
-            }
-            else onlyTempVisible = false;
-          }
+          if (hasTemp && hasAQI && !chart.isDatasetVisible(0)) onlyTempVisible = true;
           else onlyTempVisible = false;
         }
       });
@@ -76,7 +72,6 @@
               }
             }
             ctx.restore();
-            console.log("got here")
             // return false;
           }
         }
@@ -102,7 +97,7 @@
         options.scales.yAxes.push({
           id: 'temp', position: 'right', display: true,
           ticks: {fontColor: color_temp },
-          scaleLabel: { display: true, labelString: 'Temperature', fontColor: color_temp  }});
+          scaleLabel: { display: true, labelString: 'Temp/Humi', fontColor: color_temp  }});
         if (options.scales.yAxes.length == 1) options.scales.yAxes[0].position = 'left';
       }
       return options;
@@ -116,13 +111,13 @@
     function createDatasets() {
       var ds = { datasets: [] };
       if (hasAQI) {
-        ds.datasets.push(dataset('PM10 ENV', 'aqi', '%PM10_CLR%', true));
-        ds.datasets.push(dataset('PM25 ENV', 'aqi', '%PM25_CLR%', true));
-        ds.datasets.push(dataset('PM100 ENV', 'aqi', '%PM100_CLR%', true));
         ds.datasets.push(dataset('AQI', 'aqi', color_aqi, false));
       }
       if (hasTemp) {
         ds.datasets.push(dataset('Temp', 'temp', color_temp, false));
+      }
+      if (hasHumi) {
+        ds.datasets.push(dataset('Humidity', 'temp', color_humi, false));
       }
       return ds;
     }
@@ -169,17 +164,19 @@
       if (hasAQI) {
         for (var sample of aqiData.history) {
           var timestamp = sample.ts*1000
-          datasets[0].data.push({x: timestamp, y: sample.env.pm10})
-          datasets[1].data.push({x: timestamp, y: sample.env.pm25})
-          datasets[2].data.push({x: timestamp, y: sample.env.pm100})
-          datasets[3].data.push({x: timestamp, y: sample.aqi})
+          datasets[0].data.push({x: timestamp, y: sample.aqi})
         }
       }
       if (hasTemp) {
-        var index = hasAQI ? 4 : 0;
+        var index = hasAQI ? 1 : 0;
         for (var sample of weatherData.history) {
+          var timestamp = sample.ts*1000
           var temp = useMetric ? sample.t : (sample.t * 1.8 + 32);
-          datasets[index].data.push({x: sample.ts*1000, y: oneDecimal(temp)})
+          datasets[index].data.push({x: timestamp, y: oneDecimal(temp)})
+          if (hasHumi) {
+            var h =  sample.hasOwnProperty('h') ? sample.h : 10;
+            datasets[index+1].data.push({x: timestamp, y: h})
+          }
         }
       }
     }  

@@ -64,10 +64,7 @@ namespace PHWebUI {
     bool mapAQISettings(const String& key, String& val) {
       #if defined(HAS_AQI_SENSOR)
         char gr = key[2] - '0';  // GraphRange. Returns '\0' if no such index
-        if      (key == "PM10_CLR")  val = phSettings->aqiSettings.chartColors.pm10;
-        else if (key == "PM25_CLR")  val = phSettings->aqiSettings.chartColors.pm25;
-        else if (key == "PM100_CLR") val = phSettings->aqiSettings.chartColors.pm100;
-        else if (key == "AQI_CLR")   val = phSettings->aqiSettings.chartColors.aqi;
+        if (key == "AQI_CLR")   val = phSettings->aqiSettings.chartColors.aqi;
         else if (gr == phSettings->aqiSettings.graphRange && key.startsWith("AG")) val = "selected";
         else return false;
         return true;
@@ -109,8 +106,14 @@ namespace PHWebUI {
     bool hasWeather(const String& key, String& val) {
       #if defined(HAS_WEATHER_SENSOR)
         if (key == "HAS_TEMP") { val = "true"; return true; }
+        if (key == "HAS_HUMI") {
+          if (phApp->weatherMgr.availableReadingTypes() & WeatherSensor::ReadingType::Humidity) val = "true";
+          else val = "false";
+          return true;
+        }
       #else
         if (key == "HAS_TEMP") { val = "false"; return true; }
+        if (key == "HAS_HUMI") { val = "false"; return true; }
       #endif
       return false;
     }
@@ -119,11 +122,10 @@ namespace PHWebUI {
     bool mapWeatherSettings(const String& key, String& val) {
       char gr = key[2] - '0';  // GraphRange. Returns '\0' if no such index
       #if defined(HAS_WEATHER_SENSOR)
-        if (key == "TMP_CLR")   val = phSettings->weatherSettings.chartColors.temp;
-        else if (key == "TEMP_CORRECT") val.concat(phSettings->weatherSettings.tempCorrection);
+        if (key == "TEMP_CORRECT")      val.concat(phSettings->weatherSettings.tempCorrection);
         else if (key == "HUMI_CORRECT") val.concat(phSettings->weatherSettings.humiCorrection);
         else if (key == "TEMP_CLR")     val = phSettings->weatherSettings.chartColors.temp;
-        else if (key == "AVG_CLR")      val = phSettings->weatherSettings.chartColors.avg;
+        else if (key == "HUMI_CLR")     val = phSettings->weatherSettings.chartColors.humi;
         else if (gr == phSettings->weatherSettings.graphRange && key.startsWith("WG")) val = "selected";
         else return false;
         return true;
@@ -333,9 +335,6 @@ namespace PHWebUI {
         phSettings->uiOptions.useMetric = WebUI::hasArg(F("metric"));
         phSettings->uiOptions.use24Hour = WebUI::hasArg(F("is24hour"));
 #if defined(HAS_AQI_SENSOR)
-        phSettings->aqiSettings.chartColors.pm10 = WebUI::arg("pm10Color");
-        phSettings->aqiSettings.chartColors.pm25 = WebUI::arg("pm25Color");
-        phSettings->aqiSettings.chartColors.pm100 = WebUI::arg("pm100Color");
         phSettings->aqiSettings.chartColors.aqi = WebUI::arg("aqiColor");
         phSettings->aqiSettings.graphRange = WebUI::arg("aqiGraphRange").toInt();
         phApp->appScreens.aqiGraphScreen->selectBuffer(phSettings->aqiSettings.graphRange);
@@ -344,7 +343,7 @@ namespace PHWebUI {
         phSettings->weatherSettings.tempCorrection = WebUI::arg("tempCorrection").toFloat();
         phSettings->weatherSettings.humiCorrection = WebUI::arg("humiCorrection").toFloat();
         phSettings->weatherSettings.chartColors.temp = WebUI::arg("tempColor");
-        phSettings->weatherSettings.chartColors.avg = WebUI::arg("avgColor");
+        phSettings->weatherSettings.chartColors.humi = WebUI::arg("humiColor");
         phSettings->weatherSettings.graphRange = WebUI::arg("weatherGraphRange").toInt();
         phApp->appScreens.weatherGraphScreen->selectBuffer(phSettings->weatherSettings.graphRange);
 #endif

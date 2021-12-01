@@ -22,7 +22,7 @@ public:
   float   humiCorrection = 0.0; // Correction to the humidty sensor reading
   struct {
     String temp = "#ff00ff";
-    String avg = "#4e7a27";
+    String humi = "#4e7a27";
   } chartColors;
   uint8_t graphRange = 0;
   void fromJSON(const JsonDocument &doc);
@@ -33,9 +33,6 @@ public:
 class AQISettings {
 public:
   struct {
-    String pm10 = "#e32400";
-    String pm25 = "#4e7a27";
-    String pm100 = "#0042aa";
     String aqi = "#f00f88";
   } chartColors;
   uint8_t graphRange = 0;
