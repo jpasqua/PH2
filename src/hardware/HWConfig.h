@@ -242,8 +242,8 @@
 
   // ----- Air Quality Sensor
   #define USE_SW_SERIAL 1
-  constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN; // D6
-  constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN; // D8
+  constexpr uint8_t SENSOR_RX_PIN = D6;
+  constexpr uint8_t SENSOR_TX_PIN = D8;
 
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = D2;
