@@ -45,12 +45,12 @@
 #define Config_D1Mini         3
 #define Config_ESP32Mini      4
 #define Config_ESP32WithOLED  5
-#define Config_D1Mini_MOCK    6
+#define Config_D1Mini_JAWS    6
 #define Config_D1Mini_MOCK_ND 7
 #define Config_PH2_BOARD      8
 
 // SECTION 4: [CUSTOMIZE] Choose a specific configuration
-#define SelectedConfig Config_PH2_BOARD
+#define SelectedConfig Config_D1Mini_JAWS
 
 // SECTION 5: The definitions of the available configurations
 // Add new configs below if you add an option
@@ -82,7 +82,7 @@
   constexpr uint8_t NEOPIXEL_PIN = D2;
   constexpr neoPixelType NEOPIXEL_TYPE = NEO_GRB + NEO_KHZ800;
 
-#elif (SelectedConfig == Config_D1Mini_MOCK)
+#elif (SelectedConfig == Config_D1Mini_JAWS)
   /*------------------------------------------------------------------------------
    *
    * Config Info for D1Mini with 1.3" SH1106 display, but with no AQ sensor
@@ -108,6 +108,7 @@
 
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = UNUSED_PIN;
+  constexpr neoPixelType NEOPIXEL_TYPE = 0;     // Not Used
 
 #elif (SelectedConfig == Config_D1Mini_MOCK_ND)
   /*------------------------------------------------------------------------------
@@ -307,7 +308,7 @@ constexpr HWConfig hwConfig {
   { DISPLAY_DRIVER, SCL_PIN, SDA_PIN, DISPLAY_I2C_ADDRESS },
   physicalButtons, countof(physicalButtons),  
   syntheticGrounds, countof(syntheticGrounds),
-  physicalButtons[0], physicalButtons[1]
+  physicalButtons[0], UNUSED_PIN
 };
 
 #endif  // HWConfig_h
