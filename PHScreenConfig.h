@@ -19,6 +19,7 @@
 #include "src/screens/SplashScreen.h"
 #include "src/screens/HomeScreen.h"
 #include "src/screens/AQIScreen.h"
+#include "src/screens/ReadingScreen.h"
 //--------------- End:    Includes ---------------------------------------------
 
 
@@ -31,7 +32,10 @@ public:
   AQIGraphScreen*     aqiGraphScreen;
 #endif
 #if defined(HAS_WEATHER_SENSOR)
-  WeatherGraphScreen* weatherGraphScreen;
+  WeatherGraphScreen*	weatherGraphScreen;
+  TempScreen* 				tempScreen;
+  HumidityScreen* 		humiScreen;
+  BaroScreen* 				baroScreen;
 #endif
 
 	Screen* registerScreens(
@@ -56,9 +60,16 @@ public:
 	  (void)aqiMgr;
 #endif
 #if defined(HAS_WEATHER_SENSOR)
+	  tempScreen = new TempScreen();
+	  humiScreen = new HumidityScreen();
+	  baroScreen = new BaroScreen();
     weatherGraphScreen = new WeatherGraphScreen(weatherMgr);
-	  ScreenMgr.registerScreen("Temp-Graph", weatherGraphScreen);
 	  weatherGraphScreen->selectBuffer(settings->weatherSettings.graphRange);
+
+	  ScreenMgr.registerScreen("Temp", tempScreen);
+	  ScreenMgr.registerScreen("Humidity", humiScreen);
+	  ScreenMgr.registerScreen("Pressure", baroScreen);
+	  ScreenMgr.registerScreen("Temp-Graph", weatherGraphScreen);
 #else
 	  (void)weatherMgr;
 #endif
@@ -73,6 +84,11 @@ public:
 #endif
 #if defined(HAS_WEATHER_SENSOR)
 	  sequence.push_back(weatherGraphScreen);
+	  // TO DO: These should be conditioned on whether the sesnor is physically present
+	  // There may be temp, but no humidity or baro - or some other combo.
+	  sequence.push_back(tempScreen);
+	  sequence.push_back(humiScreen);
+	  sequence.push_back(baroScreen);
 #endif
 	  sequence.push_back(wtAppImpl->screens.weatherScreen);
 	  sequence.push_back(wtAppImpl->screens.forecastFirst3);
