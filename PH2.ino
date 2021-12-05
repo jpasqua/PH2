@@ -1,6 +1,6 @@
 /*
  * PurpleHaze:
- *    A monitor for a Currency Exchange Rates 
+ *    Air Quality and Weather Sensor/Monitor 
  *
  * NOTES:
  * o This is just boilerplate that initializes the app from the setup() function
