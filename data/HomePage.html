@@ -193,10 +193,11 @@
   function prep() {
     reverseGeocode();
     if (hasAQI) {
+      var AQI_LEVEL = parseInt('%AQI%');  // The AQI token may not be available if hasAQI is false
       document.getElementById('AQIBlock').style.display = "block";
       createSatImageLink();
       document.getElementById('AQIHeader').style.display = "inline";
-      colorElement(%AQI%, "aqiDot");
+      colorElement(AQI_LEVEL, "aqiDot");
       reopen('AQICollapseButton', 'AQIData');
     }
     if (hasTemp) {
