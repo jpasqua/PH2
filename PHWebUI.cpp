@@ -105,10 +105,12 @@ namespace PHWebUI {
 
     bool hasWeather(const String& key, String& val) {
       #if defined(HAS_WEATHER_SENSOR)
-        if (key == "HAS_TEMP") { val = "true"; return true; }
+        if (key == "HAS_TEMP") {
+          val = (phApp->weatherMgr.hasTemp()) ? "true" : "false";
+          return true;
+        }
         if (key == "HAS_HUMI") {
-          if (phApp->weatherMgr.availableReadingTypes() & WeatherSensor::ReadingType::Humidity) val = "true";
-          else val = "false";
+          val = (phApp->weatherMgr.hasHumi()) ? "true" : "false";
           return true;
         }
       #else
