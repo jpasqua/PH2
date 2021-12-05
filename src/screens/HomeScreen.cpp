@@ -26,9 +26,7 @@ static constexpr auto Label_Font = Display.FontID::S10;
 static constexpr uint16_t Label_FontHeight = 13;
 
 
-HomeScreen::HomeScreen() {
-
-}
+HomeScreen::HomeScreen() { }
 
 void HomeScreen::display(bool) {
   auto oled = Display.oled;
@@ -109,27 +107,27 @@ void HomeScreen::drawLabels() {
 
 void HomeScreen::drawReadings() {
 
-  int readings[3];
+  String readings[3];
   #if defined(HAS_AQI_SENSOR) && defined(HAS_WEATHER_SENSOR)
     // AQI    TEMP        HUMI
-    readings[0] = phApp->aqiMgr.derivedAQI(phApp->aqiMgr.getLastReadings().env.pm25);
-    readings[1] = Output::temp(phApp->weatherMgr.getLastReadings().temp);
-    readings[2] = phApp->weatherMgr.getLastReadings().humidity;
+    readings[0] = String(phApp->aqiMgr.derivedAQI(phApp->aqiMgr.getLastReadings().env.pm25));
+    readings[1] = String(Output::temp(phApp->weatherMgr.getLastReadings().temp, 0);
+    readings[2] = String(phApp->weatherMgr.getLastReadings().humidity, 0);
     lastReadingTime = max(
       phApp->weatherMgr.getLastReadings().timestamp,
       phApp->aqiMgr.getLastReadings().timestamp);
   #elif defined(HAS_AQI_SENSOR)
     // AQI    OWM_TEMP    OWM_HUMI
-    readings[0] = phApp->aqiMgr.derivedAQI(phApp->aqiMgr.getLastReadings().env.pm25);
-    readings[1] = phApp->owmClient->weather.readings.temp;
-    readings[2] = phApp->owmClient->weather.readings.humidity;
+    readings[0] = String(phApp->aqiMgr.derivedAQI(phApp->aqiMgr.getLastReadings().env.pm25);
+    readings[1] = String(phApp->owmClient->weather.readings.temp, 0);
+    readings[2] = String(phApp->owmClient->weather.readings.humidity, 0);
     lastReadingTime = phApp->aqiMgr.getLastReadings().timestamp;
   #else
     // TEMP    HUMI       BARO
     auto wReadings = phApp->weatherMgr.getLastReadings();
-    readings[0] = Output::temp(wReadings.temp);
-    readings[1] = wReadings.humidity;
-    readings[2] = wReadings.pressure;
+    readings[0] = String(Output::temp(wReadings.temp), 0);
+    readings[1] = String(wReadings.humidity, 0);
+    readings[2] = String(Output::baro(wReadings.pressure), 1);
     lastReadingTime = phApp->weatherMgr.getLastReadings().timestamp;
   #endif
 
@@ -137,7 +135,7 @@ void HomeScreen::drawReadings() {
   Label l;
   l.init(1, Reading_YOrigin, Reading_Width, Reading_Height, 0);
   for (int i = 0; i < 3; i++) {
-    l.drawSimple(String(readings[i]), Reading_Font, Reading_BorderSize, WHITE, WHITE, BLACK);
+    l.drawSimple(readings[i], Reading_Font, Reading_BorderSize, WHITE, WHITE, BLACK);
     l.region.x += Reading_Width-1;
   }
 }
