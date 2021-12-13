@@ -111,7 +111,7 @@ void HomeScreen::drawReadings() {
   #if defined(HAS_AQI_SENSOR) && defined(HAS_WEATHER_SENSOR)
     // AQI    TEMP        HUMI
     readings[0] = String(phApp->aqiMgr.derivedAQI(phApp->aqiMgr.getLastReadings().env.pm25));
-    readings[1] = String(Output::temp(phApp->weatherMgr.getLastReadings().temp, 0);
+    readings[1] = String(Output::temp(phApp->weatherMgr.getLastReadings().temp), 0);
     readings[2] = String(phApp->weatherMgr.getLastReadings().humidity, 0);
     lastReadingTime = max(
       phApp->weatherMgr.getLastReadings().timestamp,
