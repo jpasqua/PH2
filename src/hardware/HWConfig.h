@@ -50,7 +50,7 @@
 #define Config_PH2_BOARD      8
 
 // SECTION 4: [CUSTOMIZE] Choose a specific configuration
-#define SelectedConfig Config_D1Mini_JAWS
+#define SelectedConfig Config_PH2_BOARD
 
 // SECTION 5: The definitions of the available configurations
 // Add new configs below if you add an option
@@ -98,7 +98,7 @@
   constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { D6 };
+  constexpr uint8_t physicalButtons[] = { D6, UNUSED_PIN };
   constexpr uint8_t syntheticGrounds[] = { D8 };
 
   // ----- Air Quality Sensor
@@ -154,7 +154,7 @@
   constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { 13 };
+  constexpr uint8_t physicalButtons[] = { 13, UNUSED_PIN };
   constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
 
   // ----- Air Quality Sensor
@@ -208,7 +208,7 @@
   constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { D3 };
+  constexpr uint8_t physicalButtons[] = { D3, UNUSED_PIN };
   constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
 
   // ----- Air Quality Sensor
@@ -268,7 +268,7 @@
   constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
 
   // ----- Buttons
-  constexpr int8_t physicalButtons[] = { D3 };
+  constexpr int8_t physicalButtons[] = { D3, UNUSED_PIN };
   constexpr int8_t syntheticGrounds[] = { UNUSED_PIN };
 
   #define USE_SW_SERIAL 1
@@ -308,7 +308,7 @@ constexpr HWConfig hwConfig {
   { DISPLAY_DRIVER, SCL_PIN, SDA_PIN, DISPLAY_I2C_ADDRESS },
   physicalButtons, countof(physicalButtons),  
   syntheticGrounds, countof(syntheticGrounds),
-  physicalButtons[0], UNUSED_PIN
+  physicalButtons[0], physicalButtons[1]
 };
 
 #endif  // HWConfig_h
