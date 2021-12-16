@@ -23,12 +23,12 @@
 // SAMPLE CONFIGURATIONS
 //
 
-constexpr uint8_t BME_I2C_ADDR = 0x76;
+// constexpr uint8_t BME_I2C_ADDR = 0x76;
 // constexpr uint8_t DHT22_PIN = XX;
 // constexpr uint8_t DS18B20_PIN = XX;
 
 // Here is a configuration where there is a single BME280 sensor
-#define BME280_READINGS (BME280_AVAIL_READINGS)
+// #define BME280_READINGS (BME280_AVAIL_READINGS)
 
 // Here is a config with a BME280 and a DS18B20. We want the temp
 // value to come from the DS18B20 because it is more stable, accurate
@@ -41,9 +41,6 @@ constexpr uint8_t BME_I2C_ADDR = 0x76;
 // #define DHT22_READINGS    (0         | READ_HUMI |           )
 // #define DS18B20_READINGS  (READ_TEMP | 0         | 0         )
 
-#if defined(BME280_READINGS) || defined (DHT22_READINGS) || defined(DS18B20_READINGS)
-	#define HAS_WEATHER_SENSOR
-#endif
 
 /*------------------------------------------------------------------------------
  *
@@ -59,21 +56,9 @@ constexpr uint8_t BME_I2C_ADDR = 0x76;
 // from each of the sensor types
 #define PMS5003_AVAIL_READINGS   (PARTICULATE_LEVELS)
 
-#define PMS5003_READINGS PMS5003_AVAIL_READINGS
-
-#if defined(PMS5003_READINGS)
-	#define HAS_AQI_SENSOR
-#endif
-
-
-/*------------------------------------------------------------------------------
- *
- * Sanity Checks
- *
- *----------------------------------------------------------------------------*/
-
-#if !defined(HAS_WEATHER_SENSOR) && !defined(HAS_AQI_SENSOR)
-	#error("No sensors defined")
-#endif
+//
+// SAMPLE CONFIGURATIONS
+//
+// #define PMS5003_READINGS PMS5003_AVAIL_READINGS
 
 #endif	// SensorConfig_h
