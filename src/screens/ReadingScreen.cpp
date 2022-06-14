@@ -36,7 +36,13 @@ void ReadingScreen::display(
 }
 
 void ReadingScreen::processPeriodicActivity() {
-  if (phApp->weatherMgr.getLastReadings().timestamp > timeOfLastDisplay) display();
+  // Every minute check to see if there are new weather readings. If so, display them.
+  static uint32_t lastMinute = 0;
+  uint32_t thisMinute = minute();
+  if (thisMinute != lastMinute) {
+    lastMinute = thisMinute;
+    if (phApp->weatherMgr.getLastReadings().timestamp > timeOfLastDisplay) display(true);
+  }
 }
 
 
