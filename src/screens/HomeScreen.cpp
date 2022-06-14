@@ -118,7 +118,7 @@ void HomeScreen::drawReadings() {
       phApp->aqiMgr.getLastReadings().timestamp);
   #elif defined(HAS_AQI_SENSOR)
     // AQI    OWM_TEMP    OWM_HUMI
-    readings[0] = String(phApp->aqiMgr.derivedAQI(phApp->aqiMgr.getLastReadings().env.pm25);
+    readings[0] = String(phApp->aqiMgr.derivedAQI(phApp->aqiMgr.getLastReadings().env.pm25));
     readings[1] = String(phApp->owmClient->weather.readings.temp, 0);
     readings[2] = String(phApp->owmClient->weather.readings.humidity, 0);
     lastReadingTime = phApp->aqiMgr.getLastReadings().timestamp;
