@@ -137,6 +137,8 @@ void PurpleHazeApp::app_loop() {
 #if defined(HAS_AQI_SENSOR)
   aqiMgr.loop();
 #endif
+
+  BlynkMgr::loop();
 }
 
 void PurpleHazeApp::app_initClients() {
