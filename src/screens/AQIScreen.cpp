@@ -48,9 +48,20 @@ void AQIScreen::display(bool) {
   Display.oled->drawXbm(0, 0, AQI_ICON_WIDTH, AQI_ICON_HEIGHT, aqiIcon);
 
   Display.oled->display();
+  timeOfLastDisplay = millis();
 }
 
-void AQIScreen::processPeriodicActivity() { }
+void AQIScreen::processPeriodicActivity() {
+  // Every minute check to see if there is a new AQI reading. If so, display it.
+  static uint32_t lastMinute = 0;
+  uint32_t thisMinute = minute();
+  if (thisMinute != lastMinute) {
+    lastMinute = thisMinute;
+    uint32_t mostRecentReadingTime;
+    mostRecentReadingTime = phApp->aqiMgr.getLastReadings().timestamp;
+    if (mostRecentReadingTime > timeOfLastDisplay) display(true);
+  }
+}
 
 
 #endif

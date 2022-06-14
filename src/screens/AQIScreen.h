@@ -17,6 +17,9 @@ class AQIScreen : public Screen {
 public:
   virtual void display(bool) override;
   virtual void processPeriodicActivity() override;
+
+private:
+  uint32_t timeOfLastDisplay;
 };
 
 #endif  // AQIScreen_h
