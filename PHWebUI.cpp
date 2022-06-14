@@ -36,8 +36,11 @@ namespace PHWebUI {
       "<i class='fa fa-bar-chart'></i> Charts</a>"
       "<a class='w3-bar-item w3-button' href='/displayPHConfig'>"
       "<i class='fa fa-cog'></i> Configure Purple Haze</a>"
+#if defined(GUI_DSPLY)
       "<a class='w3-bar-item w3-button' href='/presentScreenConfig'>"
-      "<i class='fa fa-window-restore'></i> Configure Screens</a>");
+      "<i class='fa fa-window-restore'></i> Configure Screens</a>"
+#endif
+      );
 
 
     constexpr uint32_t BusyColor = 0xff88ff;
