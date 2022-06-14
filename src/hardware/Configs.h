@@ -23,7 +23,7 @@
   constexpr uint8_t SCL_PIN = D5;
 
   // ----- Display Type
-  #if defined(DISPLAY)
+  #if defined(GUI_DSPLY)
     constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SH1106;
     constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
   #else
@@ -32,7 +32,7 @@
   #endif
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { D7, D4 };
+  constexpr uint8_t physicalButtons[] = { D4, D7 };
   constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
 
   // ----- Air Quality Sensor
@@ -56,6 +56,61 @@
   #elif (BME_SENSOR == MOCK)
     #define BME280_READINGS (BME280_AVAIL_READINGS)
     constexpr uint8_t BME_I2C_ADDR = 0x00;
+  #else
+    constexpr uint8_t BME_I2C_ADDR = 0x00;
+  #endif
+
+  // ----- Indicators
+  constexpr uint8_t NEOPIXEL_PIN = D2;
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_RGB + NEO_KHZ800;
+
+
+#elif (BaseConfig == Config_PH1_Board)
+  /*------------------------------------------------------------------------------
+   *
+   * Config Info for Purple Haze v1 Board with D1 Mini. This board does not allow
+   * for a display or temperature sensor so these are hard-coded off.
+   * Of course, a system of discrete parts wired the same way can also use
+   * this configuration
+   *
+   *----------------------------------------------------------------------------*/
+
+  // ----- I2C Settings
+  constexpr uint8_t SDA_PIN = D3;
+  constexpr uint8_t SCL_PIN = D5;
+
+  // ----- Display Type
+  #if defined(GUI_DSPLY)
+    #error("No display may be attached in this configuration")
+  #else
+    constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::NONE;
+    constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x00;
+  #endif
+
+  // ----- Buttons
+  constexpr uint8_t physicalButtons[] = { UNUSED_PIN, UNUSED_PIN };
+  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+
+  // ----- Air Quality Sensor
+  #define USE_SW_SERIAL 1
+  #if (AQI_SENSOR == PRESENT)
+    #define PMS5003_READINGS PMS5003_AVAIL_READINGS
+    constexpr uint8_t SENSOR_RX_PIN = D6;
+    constexpr uint8_t SENSOR_TX_PIN = D8;
+  #elif (AQI_SENSOR == MOCK)
+    #define PMS5003_READINGS PMS5003_AVAIL_READINGS
+    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
+    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+  #else
+    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
+    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+  #endif
+
+  #if (BME_SENSOR == MOCK)
+    #define BME280_READINGS (BME280_AVAIL_READINGS)
+    constexpr uint8_t BME_I2C_ADDR = 0x00;
+  #else
+    constexpr uint8_t BME_I2C_ADDR = 0x00;
   #endif
 
   // ----- Indicators
@@ -77,7 +132,7 @@
   constexpr uint8_t SCL_PIN = D5;
 
   // ----- Display Type
-  #if defined(DISPLAY)
+  #if defined(GUI_DSPLY)
     constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SH1106;
     constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
   #else
@@ -168,7 +223,7 @@
   constexpr uint8_t SCL_PIN = 22;
 
   // ----- Display Type
-  #if defined(DISPLAY)
+  #if defined(GUI_DSPLY)
     constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SH1106;
     constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
   #else

@@ -46,20 +46,26 @@
 #define Config_PH2_Board        1
 #define Config_D1Mini_Enc       2
 #define Config_ESP8266WithOLED  3
+#define Config_PH1_Board        4
+
 
 
 //------------------------------------------------------------------------------
-// --------------------- SECTION 3: CUSTOMIZE THIS SECTION ---------------------
+// --------------------- SECTION 3: CUSTOMIZE THIS SECTION ONLY ----------------
 //------------------------------------------------------------------------------
 // Choose a base configuration and the specific devices
 // that are present on your particular board. For the BME and AQI sensors you
 // may choose PRESENT, MOCK, or leave it undefined.
+
 #define BaseConfig  Config_PH2_Board
-#define DISPLAY     PRESENT
+#define GUI_DSPLY   PRESENT
 #define BME_SENSOR  PRESENT
-// #define BME_SENSOR MOCK
 #define AQI_SENSOR  PRESENT
-// #define AQI_SENSOR MOCK
+
+// #define BaseConfig  Config_PH1_Board
+// #define AQI_SENSOR  PRESENT
+
+
 
 
 // SECTION 4: [BOLERPLATE] The definitions of the available configurations and dependent definitions
