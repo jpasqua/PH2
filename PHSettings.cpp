@@ -70,9 +70,10 @@ PHSettings::PHSettings() {
 }
 
 void PHSettings::fromJSON(const JsonDocument &doc) {
-  description = doc["description"].as<String>();
+  description = (doc["description"]|"Environment Sensor");
+  // if (description.isEmpty() || description == "null") description = String("Environment Sensor");
   blynkAPIKey = String(doc["blynkAPIKey"]|"");
-  iBright = doc[F("iBright")];
+  iBright = doc[F("iBright")] | 80;
 
   aqiSettings.fromJSON(doc);
   weatherSettings.fromJSON(doc);
