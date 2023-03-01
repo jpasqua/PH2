@@ -144,7 +144,7 @@ void PurpleHazeApp::app_loop() {
 void PurpleHazeApp::app_initClients() {
   // CUSTOM: If your app has any app-specific clients, initilize them now
 
-  ScreenMgr.showActivityIcon(AppTheme::Color_UpdatingRates);
+  ScreenMgr.showActivityIcon(AppTheme::Color_Updating);
 
   prepBlynk();
 

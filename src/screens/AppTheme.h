@@ -19,16 +19,12 @@
 //--------------- Begin:  Includes ---------------------------------------------
 //                                  Core Libraries
 //                                  Third Party Libraries
-#include <TFT_eSPI.h>
 //                                  Local Includes
 //--------------- End:    Includes ---------------------------------------------
 
 namespace AppTheme {
   // CUSTOM: Define any theme color or fonts that are used throught the app
-  constexpr uint32_t Color_SplashFG = 0x0387;
-  constexpr uint32_t Color_SplashBkg = TFT_WHITE;
-  constexpr uint32_t Color_SplashText = TFT_BLACK;
-  constexpr uint32_t Color_UpdatingRates = TFT_OLIVE;
+  constexpr uint32_t Color_Updating = 0xffff;
 };
 
 #endif	// AppTheme_h
