@@ -162,6 +162,11 @@
     constexpr uint8_t BME_I2C_ADDR = 0x00;
   #endif
 
+  #if (DHT22_SENSOR == PRESENT)
+    #define DHT22_READINGS (DHT22_AVAIL_READINGS)
+    constexpr uint8_t DHT22_PIN = D5;
+  #endif
+
   // ----- Indicators
   constexpr uint8_t NEOPIXEL_PIN = UNUSED_PIN;
   constexpr neoPixelType NEOPIXEL_TYPE = 0;     // Not Used

@@ -47,7 +47,7 @@
 #define Config_D1Mini_Enc       2
 #define Config_ESP8266WithOLED  3
 #define Config_PH1_Board        4
-
+#define Config_ESP32Mini        5
 
 
 //------------------------------------------------------------------------------
@@ -60,6 +60,7 @@
 #define BaseConfig  Config_PH2_Board
 #define GUI_DSPLY   PRESENT
 #define BME_SENSOR  PRESENT
+// #define DHT22_SENSOR PRESENT
 #define AQI_SENSOR  PRESENT
 
 // #define BaseConfig  Config_PH1_Board
