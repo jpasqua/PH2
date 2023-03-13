@@ -1,104 +1,378 @@
+# PurpleHaze - An Environmental Sensor
 
-# PurpleHaze: A WebThingApp Example
+*PurpleHaze* is an environmental sensor that can be configured to monitor air quality, temperature, humidity, and barometric pressure, or various combinations of these. It can be used as a standalone sensor which is monitored in your web browser, and it can also be configured with a display to show the sensor data and other information such as weather forecasts.
 
-![](doc/images/SplashScreen.png)
-![](doc/images/HomeScreen.png)
+*PurpleHaze* can be run on an ESP8266 or ESP32 platform and is built using the Arduino IDE. It relies on the [Plantower PMS5003](https://www.adafruit.com/product/3686) for air quality measurements. It can use the DHT22, BME280, or DS18B20 (or a combination of these) for weather sensing. With this flexibility you might build one device that is just a sensor that provides temperature, humidity, and barometric pressure. You could build another for your desk that measures air quality, all the weather data, and has a display.
 
-*PurpleHaze* is a simple example application based on the [WebThingApp library](https://github.com/jpasqua/WebThingApp), which itself is based on the [WebThing library](https://github.com/jpasqua/WebThing) library. To understand how those libraries work in more detail, refer to their documentation.
+**NOTE:** A mechanism is under development to publish the data to optionally publish collected data to [Adafruit.IO](https://io.adafruit.com)
 
-*PurpleHaze* uses the `exchangeratesapi.io` service to get currency exchange rates for up to 3 currencies. It allows the user to enter an amount of one currency and see the corresponding amounts in the other currencies.
- 
+*PurpleHaze* is configured using a Web User Interface which lets the user specify information such as:
 
-This application demonstrates the following:
+* The location of the device (e.g. "Front Yard")
+* API keys for the underlying services (e.g. TimeZoneDB)
+* The configuration of the display (if present)
+* ... and many other options
 
-* The framework to follow to create new apps
-* How to create and use persistent settings for your app
-* Screens
-	* How to use screens that come with WebThingApp
-	* How to create custom screens
-	* How to get numeric input from the user
-* Clients
-	* How to use clients that come with WebThingApp
-	* How to create custom clients
-* How to use the plugin framework
+*PurpleHaze* is built on top of the [WebThing](https://github.com/jpasqua/WebThing) and [WebThingApp](https://github.com/jpasqua/WebThingApp) frameworks. Any other devices built on those frameworks will have similar configuration and organization.
 
 ## Dependencies
 
 ### Libraries
+The following libraries are used within this project. 
 
-To build this application you will need to douwnload and install all of the libraries required by [WebThingApp library](https://github.com/jpasqua/WebThingApp) and [WebThing library](https://github.com/jpasqua/WebThing). No additional libraries are required.
+* [Adafruit NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)
+* [Arduino-Log](https://github.com/thijse/Arduino-Log)
+* [ArduinoJson (v6)](https://github.com/bblanchon/ArduinoJson)
+* [blynk-library](https://github.com/blynkkk/blynk-library)
+* [CircularBuffer](https://github.com/rlogiacco/CircularBuffer)
+* [ESPTemplateProcessor](https://github.com/jpasqua/ESPTemplateProcessor)
+* [TimeLib](https://github.com/PaulStoffregen/Time.git)
+* [WebThing](https://github.com/jpasqua/WebThing)
+* [WebThingApp](https://github.com/jpasqua/WebThingApp)
+* ESP32 Only
+	* [ESP32_AnalogWrite](https://github.com/ERROPiX/ESP32_AnalogWrite)
+
+The following libraries are used in the browser. You do not need to download or install them. They are listed here because if you are doing further development of the browser code, you may need to understand their usage:
+
+* [Chart.js](https://www.chartjs.org)
+* [JQuery](https://jquery.com)
 
 ### Services
+The following services play a role in providing parts of the functionality:
 
-*PurpleHaze* depends on two services in addition to those used by [WebThingApp library](https://github.com/jpasqua/WebThingApp) and [WebThing library](https://github.com/jpasqua/WebThing):
+ - Services used by WebThing
+	 - [Google Maps](https://developers.google.com/maps/documentation): Used for geocoding and reverse geocoding. Though not absolutely necessary, it does make using the system a bit more convenient.
+	 - [TimeZoneDB](https://timezonedb.com): Used to get local time and time zone data. This is used to timestamp data. It is necessary for the operation of *PurpleHaze*.
 
-* **exchangeratesapi.io**:
-	* This service requires a free API key. You can get one [here](https://manage.exchangeratesapi.io/signup).
-	* If you don't want to get an API key, you can get mock values by entering MOCK as the api key in the settings. 
-* **coinbase.com**:
-	* This service is used by the plugin example. It does not require an API key, but does use SSL.
-	* To remove the plugins completely, just delete (or move) the `plugins` directory from the `data` directory (see the file structure below).
-	* If you wish to keep the plugins but don't have enough memory, you can use a mock client which returns fabricated results. Mocking can be enabled in the `CoinbaseClient.h` file. As you will seeing, mocking is enabled by default on ESP8266.
+<a name="organization"></a>
+## Organization
 
-<a name="structure"></a>
-## File Structure 
-
-Let's look at the files and directory structure of a typical `WebThingApp`. In this case the app is called `PurpleHaze` and files often have the prefix `CM`. Here is an overview of the directory structure.
+### Directory Structure
+The directory structure of the project is shown below. You don't need to know this to build and use the project, but if you want to work on it, this will give you an idea of where everything is located.
 
 ````
-PurpleHaze
-├── PHDataSupplier.[h,cpp]
-├── PHSettings.[h,cpp]
-├── PHWebUI.[h,cpp]
-├── PurpleHaze.ino
-├── PurpleHazeApp.[h,cpp]
-├── README.md
-├── data
-│   ├── <html files that are specific to this app>
-│   ├── plugins
-│   │   ├── 1_gnrc
-│   │   ├── 3_crypto
-│   └── wt
-│   │   └── <html files from the WebThing library>
-│   └── wta
-│       └── <html files from the WebThingApp library>
-└── src
-    ├── clients
-    │   └── RateClient
-    └── screens
-        ├── AppTheme.h
-        ├── SplashScreen.[h,cpp]
-        ├── HomeScreen.[h,cpp]
-        └── images
-            └── ...
+    PurpleHaze
+        [Primary Source files including PurpleHazeApp.ino]
+        /src
+          /hardware
+            [Defines the configuration of HW used in your device]
+          /screens
+            [Code to show data on a locally attached display]
+        /data
+          [HTML page templates for PurpleHaze]
+          /plugins
+          	[Data defining optional plugins]
+          /wt
+          	[HTML page templates for WebThing]
+          /wta
+          	[HTML page templates for WebThing]
+        /doc
+        /images
+            [images used in the documentation, not by the code]
+        /resources
+        	[Other resources such such as source images used on the display]
+
 ````
 
-Description:
+### Code Structure
 
-* The `PurpleHaze` directory contains the source code for the app itself:
 
-	* `PHDataSupplier `: This module contains a dataSupplier function which gets plugged into the `DataBroker` to publish app specific information. In this case it is information about exhcange rates.
-	* `PHSettings `: Defines, internalizes, and externalizes the settings that are specific to this app.
-	* `PHWebUI`: Provides app-specific web pages and functions. For example, the configuration page that lets you specify which currencies you are. interested in. `WebThingApp` provides many other pages such as general settings, display settings, and weather settings.
-	* `PurpleHaze.ino`: This is a bridge between the Arduino `setup()` and `loop()` functions and the app initialization and operation. It is boilerplate and there is no app-specific code in this module.
-	* `PurpleHazeApp`: This is the core of the application. It is a subclass of `WTAppImpl` and `WTApp` which are part of the `WebThingApp` library.
-* The `data` directory contains contains all the files that will be written to the file system as part of the build process. There are four sets of files in the data directory:
+The primary functional areas of *PurpleHaze* are given below. You don't need to know this to build and use the project, but if you want to work on it, this will give you an idea of where the different functionality is implemented.
 
-	* At the root are HTML files that are used by any custom pages served up by the app's Web UI. For example, a custom home page. You may also place a settings.json file here if you want to have settings loaded into the app by default. Otherwise the user will need to configure the app settings when the device starts the first time.
-	* The `plugins` subdirectory contains subdirectories for each plugin to be loaded. See the [plugin section](#plugins) for details.
-	* The `wt` subdirectory contains HTML for the pages displayed by the `WebThing` Web UI pages. These are low level configuration items such as the hostname to use. You may also place a settings.json file here if you want to have settings loaded into the app by default. Otherwise the user will need to configure all the `WebThings` settings when the device starts the first time.
-	* The `wta` subdirectory contains HTML for the pages displayed by the `WebUIHelper`. These are pages that are common to most apps like a page to configure display settings.
+*PurpleHaze* is built using the [WebThingApp](https://github.com/jpasqua/WebThingApp) framework. This framework provides much of the basic functionality required by a <span style="color:blue">**Web**</span>-attched <span style="color:blue">**Thing**</span> which functions as an <span style="color:blue">**App**</span>. Hence the name <span style="color:blue">**WebThingApp**</span>. In this context **App** means something that has a local GUI (even a super simple one). **WebThingApp** is in turn built on a lower level framework called [WebThing](https://github.com/jpasqua/WebThing). It provides the more basic parts of the functionality without the GUI components. Using these frameworks allows PurpleHaze to focus on the core functionality of being an environment sensor, rather than all of the other infrastructure.
 
-* The `src/clients` directory contains code that implements client objects for web services, sensors, or other data providers/actuators. Of course applications can use existing libraries if they exist. This directory is for app-specific clients.
+Here is the general lay of the land for the code:
 
-* The `src/screens` directory contains code for app-specific screens. Most apps will use the common screens provided by `WebThingApp`, but they will also typically provide at least one custom screen.
+* `PH2`
+  * This is boilerplate used by the WebThing/WebThingApp framework. No functionality resides here.
+* `PurpleHazeApp.[cpp,h]`
+  * The primary logic for the application.
+* `PHDataSupplier.[cpp,h]`
+  * Externalizes the data from the sensors to other components of the system, including plugins.
+* PHScreenConfig.h
+  * Defines which screens should be displayed as part of the GUI. This is only relevant to devices that have a locally attached display.
+* PHSettings.[cpp,h]
+  * Defines the settings used by *PurpleHaze* and the code to internalize/externalize the settings to JSON.
+* PHWebUI.[cpp,h]
+	* Implements the Web UI for *PurpleHaze* which primarily consists of pages that allow the user to view and update the settings of the device. When settings change in the Web UI, it calls back into the core of the code to have those changes reflected. 
+	* **NOTE**: Currently the real-time handling of changes is not very thorough. Many changes require a reboot to take effect.
+* src/hardware/
+  * specifies the combination of hardware in use by your actual device. 
+* src/screens/
+  *  The implementation of the various screens of data that be shown on the optionally attached displays.
 
-## Building and Using PurpleHaze
+<a name="building-PH"></a>
+## Building PurpleHaze
 
-To build *PurpleHaze*, follow the instructions in the ["Building a WebThingApp"](../../README.md#building) section of the `WebThingApp` documention. This covers both the hardware and software aspects of the build process.
+*PurpleHaze* has been built and tested with the hardware and software listed below. Other versions may work, but haven't been tested.
 
-Once complete, you can set up your device following the instructions in the ["Setting up your device"](../../README.md#preparation) section. This will get you 90% of the way through the process, but you still need to configure settings that are specific to *PurpleHaze*.
+**Hardware**
 
-### Configuring the Currencies
+* Microcontroller: ESP8266 or ESP32
+* Air Quality Sensor: PMS5003
+* Weather Sensors: DME280, DHT22, DS18B20
+* WS2812B NeoPixels 
 
-### Configuring the Plugins
+** Software**
+
+* IDE: Arduino 1.8.10, 1.8.13, 1.8.19
+* ESP8266 Core: **FILL IN**
+* ESP32 Core: **FILL IN**
+* Libraries: See dependency list above.
+
+### Hardware
+
+#### Configuring Your Hardware
+
+The primary components of this project are a [Plantower PMS5003](https://www.adafruit.com/product/3686) sensor and an ESP8266 such as a Wemos D1 Mini (but virtually any ESP8266 will work). You can optionally add a few WS2812 LEDs (commonly known as NeoPixels) for status readouts if you'd like.
+
+In its simplest form, *PurpleHaze* is simply an ESP8266 connected to the PMS5003 sensor with 2 pins used for serial communications along with power (5V and ground). Logic levels between the PMS5003 and the ESP8266 are 3.3V.
+
+All of the components can be wired together point-to-point, or assembled onto a protoboard as shown in the image below. The [attached schematic](doc/images/Schematic.svg) shows the wiring. The NeoPixel LEDs are optional. If you are *not* using the LEDs, set `NEOPIXEL_PIN` to `-1` in `HWConfig.h`.
+
+[<img src="doc/images/Protoboard.jpg" width="250">](doc/images/Protoboard.jpg)
+
+A PCB design is also available in the resources directory. As can be see in the images below, it is really nothing more than a consolidated place to mount a Wemos D1 Mini, the connector for the PMS5003 cable and WS2812D indicator LEDs such as [these](https://www.aliexpress.com/item/32847283594.html). Note that an ESP32 D1 Mini will fit this PCB, but the frontmost pairs of pins will hang past the edge of the board.
+
+Notes on the LEDs:
+
+* Be careful - there are LEDs that look the same but whose pins are in a different order. If you are using the PCB, make sure you have LEDs whose pins are ordered: `Dout`, `Vcc`, `GND`, `Din`
+* You'll notice that the LEDs have a flat spot on one side of the base. Align that flat spot to the flat spot shown on the PCB. Refer to the images below.
+* I've found that some WS2812D LEDs do not work reliably with the ESP32. Unfortunately the batches you order from the link given above are not consistent and may or may have issues.
+
+The D1 Mini can be mounted on the top of the board as shown in the image, or below the board with the headers on the top of the D1 rather than the bottom. In the 3D model you'll find that the D1 is mounted on the bottom. The same is true for the sensor header.
+
+[<img src="doc/images/PCB_Bare.jpg" width="250">](doc/images/PCB_Bare.jpg)
+[<img src="doc/images/PCB_Populated.jpg" width="250">](doc/images/PCB_Populated.jpg)
+
+Speaking of the sensor header, it is there for use with the adapter board that comes with the Adafruit sensor and is also available form [aliexpress](https://www.aliexpress.com/item/33040162499.html). You can bypass that board completely by cutting the connector off one end of the cable and soldering the wires directly to the board in place of the sensor header. Only four wires from the cable are needed: `VCC`, `GND`, `TX`, and `RX`. You can see that configuration in the image below:
+
+[<img src="doc/images/Direct.jpg" width="250">](doc/images/Direct.jpg)
+
+The 3D Model for the housing has a bracket that is designed to work with this PCB. You can use a service like [OSH Park](https://oshpark.com/) or [JLCPCB](https://jlcpcb.com) to fabricate the board by uploading the design which is a single zip file containing the [Gerber](https://en.wikipedia.org/wiki/Gerber_format) files.
+
+
+### 3D Model
+
+A housing for *PurpleHaze* is [available on thingiverse](https://www.thingiverse.com/thing:4607364). It contains an internal mounting system that is designed to work with the PCB mentioned above. The 3D model is included so it can be modified to hold other configurations of the electronics. 
+
+*Note*: The ESP32 version of the D1 Mini is wider than the ESP8266 version and conflicts with one of the mounting posts of the model. A future version will remedy this.
+
+[<img src="doc/images/Housing/H2.jpg" width="200">](doc/images/Housing/H2.jpg)
+[<img src="doc/images/Housing/H1.jpg" width="200">](doc/images/Housing/H1.jpg)
+[<img src="doc/images/Housing/H3.png" width="200">](doc/images/Housing/H3.png)
+
+**NOTE**: If you use the [Adafruit version of the PMS5003](https://www.adafruit.com/product/3686) with their adapter board, you will probably want to bend the pins on the that board 90° to make it work well in this housing. The adapter that is available from [aliexpress](https://www.aliexpress.com/item/33040162499.html) is already in this orientation.
+
+<a name="software"></a>
+### Software
+Building the software for *PurpleHaze* is a bit more complex than a typical application because it stores files on the ESP8266/ESP32 file system. This means that you need to use a plug-in to the Arduino IDE to upload those files to the Arduino. The file structure is described in detail in the [*WebThing*](https://github.com/jpasqua/WebThing) readme file. In this section I will describe the steps involved.
+
+1. Download and install the [`ESP8266 Sketch Data Upload`](https://github.com/esp8266/arduino-esp8266fs-plugin) plugin. For ESP32, use the [ESP32 Sketch Data Upload plugin](https://github.com/me-no-dev/arduino-esp32fs-plugin) plugin. Note that installing this plugin is not the same as installing a normal Arduino library. Follow the installation instructions [here](https://github.com/esp8266/arduino-esp8266fs-plugin#installation). If you have installed successfully, you will see a new menu item in the Arduino IDE Tools menu. See the screen shot below.
+2. Copy or link the `wt` directory from [*WebThing*](https://github.com/jpasqua/WebThing) `data` directory to the *PurpleHaze* `data` directory. When you're done you'll have a `data` directory that contains a number of `HTML` files and a `wt` subdirectory. The `wt` subdirectory will also contain `HTML` files.
+3. You need to reserve some flash memory space for the file system.
+	* ESP8266: In the Tools menu of the Arduino IDE you will see a `Flash Size` submenu. Choose `FS: 1MB`.
+	* ESP32: Use the defaults - no need to make any changes.
+4. Now connect your ESP8266 to your computer via USB and select the `ESP8266 Sketch Data Upload` item from the tools menu. You will see all the files in your `data` directory, including those in the `wt` subdirectory being loaded onto your ESP8266. The process is the same for ESP32, though the specific names/menu items will be different.
+5. Finally you can proceed as usual and compile / upload *PurpleHaze* to your ESP8266.
+![](doc/images/ArduinoToolsMenu.png)
+
+## Setting Up PurpleHaze
+
+### Getting Started with Configuration
+
+Before you get started, you will need API keys for the services mentioned above (Google Maps and  TimezoneDB). They are free for non-commercial use. Please go to each site, create a key, and keep track of them. You'll need to supply them during the configuration process. Technically, you don't need a Google Maps key. Without it you'll need to look up the latitude and longitude of your location on your own and enter them into the Web UI. You do need a TimezoneDB key so *PurpleHaze* can keep track of the time of the readings. It is also useful for other functions if you have a display attached.
+
+<a name="connecting-to-your-network"></a>
+### Connecting to your network
+Once you have assembled your hardware and loaded the firmware, the monitor will boot and create its own WiFi access point. Connect to the new access point you will see on your phone or computer's wifi connection list. It will have an SSID of the form `ph_NNNNN`. Once you do, you will enter a "captive portal" where you can configure the device for your actual WiFi base station. Shortly after you've done that, *PurpleHaze* will automatically connect to your wifi network. If it does not, then power cycle the device.
+
+At this point it will make a web interface available. You can connect using either an IP address or a hostname:
+
+- **IP Access**: You need to determine the IP Address used by the device. You have a couple of choices here:
+    - If you are still connected via USB, you will see the IP address in the Arduino Serial Monitor
+    - You can use a scanning tool or your router to look for the device on your network
+- **Hostname**: If your system supports mDNS (e.g. a Mac or a Raspberry Pi running avahi) you can connect to hostname.local in your browser. Hostname will be of the form `ph_NNNNN`.
+
+
+### Configuring PurpleHaze
+
+Once connected, you can use the web interface to configure a few parameters of your monitor. You get to the settings by selecting an item from the [hamburger menu](https://en.wikipedia.org/wiki/Hamburger_button) in the top left of the web page. Before getting to settings that are specific to *PurpleHaze*, you need to configure some general information for your web-connected device including a username / password. You do this using the *General Settings* menu item as described below.
+
+<a name="general-settings"></a>
+![](doc/images/GeneralSettings.png)  
+
+These settings are common to many network connected devices and are encapsulated by the [*WebThing*](https://github.com/jpasqua/WebThing) library. The settings you must configure are listed below in the order you will want to enter them on a new device. In general, once you have entered the General Settings once, you won't need to change them again. When you are setting up your device for the first time, you will need to enter some of the settings, save, and reboot before you can enter the rest. In particular, you'll need to enter the API keys before you can geolocate your address.
+
+* **API Keys**: You need these keys to be entered in order to use the location options below and to have the time set.
+	* [Google Maps](https://developers.google.com/maps/documentation/javascript/get-api-key): Fill in the api key you acquired from for the Google Maps service
+	* [TimeZoneDB](https://timezonedb.com/api): Fill in the api key you acquired from for the TimezoneDB service. Note: NTP is perhaps a more natural choice for a time service, but it does not incorporate a mechanism for time zone determination. TimeZoneDB allows WebThing to get the time, time zone, and local time without need for another mechanism. **Note** that these keys will not be active until after you have saved them and rebooted the device.
+* **Username / Password**: The username / password you'll use when you connect to *PurpleHaze*. This is not the same as any username/password you use to log into your printers. It defaults to admin/password. ***You should change these*** the first time you configure *PurpleHaze*.
+* Web Server Settings:
+	* **Hostname**: A network name for your *PurpleHaze* device. If you configure a name such as `PH`, then you can access your device from a browser using the address `http://PH.local` rather than using the IP address. This only works on systems that have support for mDNS. This is native on Macs but can be added to Linux and Windows with software such as [Avahi](https://github.com/lathiat/avahi).
+	* **Port**: The port that *PurpleHaze* will listen on. Usually 80 unless you've got a good reason.
+* Location Settings:
+	* **Latitude, Longitude, Elevation**: In *PurpleHaze*, these are only used to determine your time zone (for this purpose elevation is not important).
+	* **Address** / Geocode: Since you probably don't know your lat/lon and elevation, enter an address in the Address field and press the Geocode button. Assuming you have already saved your Google Maps API key, the address will be translated to lat/lon and elevation. If you prefer not to create a Google Maps key, you can find your lat/lon manually as [described here](https://support.google.com/maps/answer/18539).
+* **Theme Color**: Choose a theme for the Web UI that suits your style. The themes are all from the [W3.CSS](https://www.w3schools.com/w3css/w3css_color_themes.asp) set.
+
+<a name="configure-PH"></a>
+![](doc/images/ConfigurePH.png) 
+
+Now that the General Settings are out of the way, you can adjust settings that are specfic to *PurpleHaze*:
+
+- **Description**: A description that is useful to the user. For example, the location of the device like "Back Yard" or "Inside".
+- **Blynk API Key**: An API key established by the user when configuring the Blynk app.
+- **Indicator Brightness**: If your device incorporates indicator LEDs, this sets their brightness in the range from 0-100%.
+- **Chart Colors**: The [charts page](#charts) shows historical data in the form of line charts. Each chart shows four lines: pm10, pm25, pm100, and AQI. You can customize the colors of the lines. The background of the chart displays color bands that correspond to the air quality (green, yellow, and various shades of red). These colors can be changed in `data/ChartPage.html`, but not in the Web UI.
+
+
+## Using PurpleHaze
+
+*PurpleHaze* lets you view your air quality data on your phone or with a web browser. But what do all these numbers mean? There are many resources available to help you understand the data; for example, [this page](https://www.epa.gov/pm-pollution/particulate-matter-pm-basics) on the US EPA website. The following table summarizes the air quality index values at a high level (adapted from [AirNow.gov](https://www.airnow.gov/aqi/aqi-basics/)).
+<a name="color_code"></a>
+
+|Color|Concern|Range|Description of Air Quality|
+|--- |--- |--- |--- |
+| ![](doc/images/Color_Green.png) |Good|0 to 50|Air quality is satisfactory, and air pollution poses little or no risk.|
+| ![](doc/images/Color_Yellow.png) |Moderate|51 - 100|Air quality is acceptable. However, there may be a risk for some people, particularly those who are unusually sensitive to air pollution.|
+| ![](doc/images/Color_Orange.png)|Unhealthy for Sensitive Groups|101 - 150|Members of sensitive groups may experience health effects. The general public is less likely to be affected.|
+| ![](doc/images/Color_Red.png)|Unhealthy|151 - 200|Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.|
+| ![](doc/images/Color_Purple.png)|Very Unhealthy|201 - 300|Health alert: The risk of health effects is increased for everyone.|
+| ![](doc/images/Color_Maroon.png)|Hazardous|301+|Health warning of emergency conditions: everyone is more likely to be affected.|
+
+The colors shown above are used on the [home page](#home) of the Web UI and on the [charts page](#charts). The air quality NeoPixel also displays one of these colors to show you the current AQI.
+
+*PurpleHaze* uses a fairly simple algorithm to determine AQI based on sensor data. This algorithm is not "certified" in any way and you should **NOT** depend on it for any health related matters. The algorithm used by *PurpleHaze* is similar to the method described in [this wikipedia article](https://en.wikipedia.org/wiki/Air_quality_index#Computing_the_AQI). However, the actual conversion table is taken from the paper ["Measurements of PM2.5 with PurpleAir under atmospheric conditions"](https://amt.copernicus.org/preprints/amt-2019-396/) and it's [supplement](https://amt.copernicus.org/preprints/amt-2019-396/amt-2019-396-supplement.pdf). 
+
+### Viewing PurpleHaze data on your phone
+
+To use your phone, you'll need the Blynk App for [iPhone](https://itunes.apple.com/us/app/blynk-control-arduino-raspberry/id808760481?ls=1&mt=8) or [Android](https://play.google.com/store/apps/details?id=cc.blynk). Follow these steps to get going:
+
+1. Download the appropriate app using the links above.
+2. Open the Blynk app and create a new Blynk account if you don't have one already.
+3. Touch the QR code icon at the top of the screen.
+4. Scan the QR code below. This will load the AirQuality Monitoring configuration which you may customize if you wish using the Blynk app (no coding required).
+5. Blynk will send you an "Auth Token" via email. Enter this in the settings screen of the web interface in the field labeled "Blynk API Key". Hit save and restart the device.
+6. Use the Blynk app to see current and historical values.
+
+Blynk QR Code:<br><img src="doc/images/BlynkQRCode.png" width="250" /></img><br>
+
+### Viewing PurpleHaze data in your browser
+
+<a name="home"></a>
+![](doc/images/Home.png)
+
+You're already familiar with the Web UI since you used it to configure *PurpleHaze*. Whenever you navigate to *PurpleHaze* in your browser, you will be presented with a home page that shows a variety of current and historical data from your monitor. Refer to the resources above to understand what all these values mean. The elements of the page are as follows:
+
+* **PurpleHaze Data**: This is just a heading, but also shows the time of the last reading taken by the device
+* **AQI** (Air Quality Index): The current AQI reading and the associated color code for that level. If you hover over this area you'll see some text describing the level.
+* **Sensor Readings**: The most recent standard and environment readings of PM1.0, PM2.5, and PM10.0. The heading of this section includes two links labeled "charts" and "Satellite Image". You can also access charts [via the menu](#charts). If you click the "Satellite Image" link, a new window or tab will open with a satellite image centered over your location; i.e., the location you entered in the Web UI. This view is useful to visualize any major events (e.g. fires) that may be impacting your air quality.
+* **Particulate Counts**: The raw particulate counts for particles of various sizes.
+* Moving averages: The average PM25 Environment values for the last 10 minutes, 30 minutes, hour, and 6 hour periods. 
+* **Area Readings**: A widget from [AirNow.gov](airnow.gov) that shows data for your area. Note that this data does not reflect the reading of your device.
+
+
+<a name="charts"></a>
+![](doc/images/Charts.png)
+
+The Charts page provides several charts with historical data. In each chart you will see a line for the Air Quality Index, PM10, PM25, and PM100 data. The charts cover three different time frames:
+
+* The last hour, recorded at 5 minute intervals
+* The last day, recorded at 1 hour intervals
+* The last week, recorded at 6 hour intervals
+
+Hover your mouse over a dot on the chart to see the precise value and time it was recorded. For any of the charts, if you click on the legend of one of the lines, it will toggle that line's visibility in the graph. For example, if you just want to see the PM25 line, click on the legend items for PM10 and PM100 and those lines will disappear. Click them again and they will return.
+
+Note that when you first turn on your device, there will be no historical data so the charts won't be very interesting. Over time they will fill up with data.
+
+[<img src="doc/images/ChartPage.png" width="250">](doc/images/ChartPage.png)
+
+
+<a name="indicators"></a>
+### Viewing the Indicator LEDs
+
+If you have added indicator LEDs, they will display information as follows:
+
+| LED        	| Color              	| Description
+|------------	|--------------------	|-------------------------------------
+| 1: Quality 	| Off                	| No power to the device
+|            	| Gray               	| No data has been read yet 
+|            	| Green, Yellow, Red, Purple, Maroon 	| The shade indicates the air quality as [defined above](#color_code)
+| 2: Sensor  	| Off                	| Sensor is asleep
+|            	| Yellow             	| Sensor is waking up
+|            	| Green              	| Sensor is awake
+|            	| Purple             	| Stabilizing                         
+| 3: Status  	| Off                	| No activity
+|            	| Red                	| Problem initializing
+|            	| Blue               	| No wifi has been configured
+|            	| Green              	| Processing readings
+|            	| Magenta              	| Serving a web request
+
+<a name="dev-info"></a>
+## Operational Info for Developers
+
+### Developer Endpoints and the Developer Menu
+
+![](doc/images/DevMenu.png) 
+
+There are a number of web endpoints for developers that can help with extending and debugging *PurpleHaze*. Each of the endpoints is listed below. Though it is not normally part of the main menu, you can get to an additional page of options by entering the url `http://[PH_Address]/dev` into your browser. Once you go to that page, you'll get an option to enable the Developer menu item which will make it easier to get to in the future.
+
+Internally this has the effect of changing the value of the `showDevMenu` setting. If you prefer to have the Developer menu on by default, you can edit `PHSettings.h` and initialize  `showDevMenu` to `true`.
+
+**Viewing your settings**
+
+It can sometimes be useful to see all the settings in their JSON representation. The `/dev` page has a `View Settings` button which will return a page with the JSON representation of the settings. You can also get to this page directly with the url `http://[PH_Adress]/dev/settings`. If you save these settings as a file named `settings.json` and place it in your `data` directory, it can be uploaded to your device using `Sketch Data Uploader`. There is no need to do this, but developers may find it useful to easily switch between batches of settings.
+
+The `/dev` page also has a `View WebThing Settings` button which will return a page with the JSON representation of the WebThing settings. This includes things such as the hostname, API keys, and the web color scheme.
+
+**History**
+
+As mentioned above, *PurpleHaze* periodically saves historical information to flash memory. You can see that data in JSON format by pressing the `View History` button. You can also get to this data directly with the url `http://[PH_Adress]/getHistory?range=combined`. You can also get just the hour-data, day data, or week data by substituting `hour`, `day`, or `week` as the range.
+
+**AQI**
+
+A client can get the most recent AQI reading using the endpoint: `http://[PH_Adress]/getAQI`. This call will return a JSON object containing the AQI along with a timestamp and additional supporting information. For example:
+
+````
+{
+  "timestamp": 1603993511,
+  "aqi": 40,
+  "shortDesc": "Good",
+  "longDesc": "Air quality is satisfactory, and air pollution poses little or no risk.",
+  "color": 65280
+ }
+````
+
+A client can display this information in whatever way it wishes. The descriptions are not localized at the moment. They are always in English and correspond to the wording used by [AirNow.gov](http://airnow.gov).
+
+**Rebooting**
+
+Finally, the `/dev` page also has a `Request Reboot` button. If you press the button you will be presented with a popup in your browser asking if you are sure. If you confirm, your *PurpleHaze* device will immediately reboot as if the reset button had been pressed.
+
+### Tips
+
+**Settings**
+
+During development you may be uploading sketch data from time to time. When you do this, it overwrites the entire SPIFFS file system on the ESP8266/ESP32. This means any settings that you have customized through the web interface will be wiped out. This gets annoying, but you can work around it in two ways:
+
+1. [Not Recommended] Change the *PurpleHaze* code and the WebThing library to hard-wire your default settings.
+2. [Recommended] Configure *PurpleHaze* the way you like it. From the developer menu, click on the `View Settings` button to get your settings as JSON. Save the text into a file named `settings.json` and put it into your data directory. Do the same thing by pressing the `View WebThing Settings` button and save that text into `data/wt/settings.json` From that point forward, any time you upload sketch data, your preferred settings will be uploaded also.
+
+**Blynk**
+
+The virtual pins used by Blynk are currently hard-wired in the code and are not available in the Web UI. If you want to use different pin assignments, you need to change them in `PHBlynk.h` and make the settings in the Blynk app correspond to the values you have chosen.
+
+**History**
+
+The monitor itself will keep a relatively small amount of historical data on the device. This data is preserved across reboots or power outages. Specifically, every 10 minutes *PurpleHaze* saves the historical data for the last hour (with readings every 5 minutes), the last day (with readings every hour), and the last week (with readings every 6 hours).
+
+Uploading new versions of the code will not overwrite the history, but uploading new data files will. You can preserve your history in similar way as just described for settings. From the developer menu, click on the `View History` button. This will return your history as JSON. Save the text into a file named `history.json` and put it into your data directory. When you upload sketch data, the history will also be uploaded.
+
+**Indicators**
+
+You can use the indicator LEDs to help you debug if you are not connected to the serial monitor. You can give limited status information by setting any of the indicators to a specific color to indicate what state the device is in.
+
+**Rebooting**
+
+When you need to restart the device, it is best to power cycle your ESP8266/ESP32 and PMS5003 rather than just hitting the reset button. I've noticed situations where the ESP has a hard time re-syncing with the sensor after a reset (as opposed to a power-cycle).
