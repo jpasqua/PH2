@@ -28,7 +28,7 @@
     {
       "x": 0, "y": 36, "w": 64,  "h": 10, "xOff": 0, "yOff": 0,
       "justify": "TL", "font": "S10", "color": "0xFFFFFF", "format": "%s",
-      "type": "String", "key": "$E.BR.NN1"
+      "type": "String", "key": "$E.AR.NN1"
     },
     {
       "x": 0, "y": 48, "w": 32,  "h": 10, "xOff": 32, "yOff": 0,
@@ -37,7 +37,7 @@
     {
       "x": 32, "y": 48, "w": 32,  "h": 10, "xOff": 0, "yOff": 0,
       "justify": "TL", "font": "S10", "color": "0xFFFFFF",  "format": "%0.1fF",
-      "type": "FLOAT", "key": "$E.BR.0/V0"
+      "type": "FLOAT", "key": "$E.AR.0.temp"
     },
     {
       "x": 64, "y": 48, "w": 32,  "h": 10, "xOff": 32, "yOff": 0,
@@ -46,7 +46,7 @@
     {
       "x": 96, "y": 48, "w": 32,  "h": 10, "xOff": 0, "yOff": 0,
       "justify": "TL", "font": "S10", "color": "0xFFFFFF",  "format": "%.0f",
-      "type": "FLOAT", "key": "$E.BR.0/V25"
+      "type": "FLOAT", "key": "$E.AR.0.aqi"
     }
 
   ],
