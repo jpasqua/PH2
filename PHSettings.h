@@ -51,7 +51,11 @@ public:
 
   // ----- Settings
   String  description = "Air Quality Sensor"; // User's description of their AQ Sensor
-  String  blynkAPIKey = "";                   // Your API Key from Blynk
+  struct {
+    String username;
+    String key;
+    String groupName;
+  } aio;
   uint8_t iBright = 50;                       // Brightness of indicators (0-100%)
   
   AQISettings aqiSettings;

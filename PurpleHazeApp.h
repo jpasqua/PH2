@@ -80,7 +80,7 @@ protected:
   virtual void configModeCallback(const String &ssid, const String &ip) override;
 
 private:
-  void prepBlynk();
+  void prepAIO();
   void prepSensors();
   void configureDisplay();
   void configurePins();

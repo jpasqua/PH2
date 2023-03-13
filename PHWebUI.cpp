@@ -175,7 +175,9 @@ namespace PHWebUI {
 
     bool mapPHSettings(const String& key, String& val) {
       if      (key == "DESC")       val = WebThing::encodeAttr(phSettings->description);
-      else if (key == "BLYNK_KEY")  val = phSettings->blynkAPIKey;
+      else if (key == "AIO_KEY")    val = phSettings->aio.key;
+      else if (key == "AIO_USER")   val = phSettings->aio.username;
+      else if (key == "AIO_GROUP")  val = phSettings->aio.groupName;
       else if (key == "I_BRIGHT")   val.concat(phSettings->iBright);
       else if (key == "USE_METRIC") val = WebUI::checkedOrNot[phSettings->uiOptions.useMetric];
       else if (key == "USE_24HOUR") val = WebUI::checkedOrNot[phSettings->uiOptions.use24Hour];
@@ -335,7 +337,9 @@ namespace PHWebUI {
     void updatePHConfig() {
       auto action = []() {
         phSettings->description = WebUI::arg("description");
-        phSettings->blynkAPIKey = WebUI::arg("blynkAPIKey");
+        phSettings->aio.key = WebUI::arg("aioKey");
+        phSettings->aio.username = WebUI::arg("aioUsername");
+        phSettings->aio.groupName = WebUI::arg("aioGroup");
         phSettings->iBright = (constrain(WebUI::arg("iBright").toInt(), 0, 100));
         phSettings->uiOptions.useMetric = WebUI::hasArg(F("metric"));
         phSettings->uiOptions.use24Hour = WebUI::hasArg(F("is24hour"));

@@ -42,6 +42,8 @@ public:
 		PHSettings* settings, PluginMgr& pluginMgr,
 		const AQIMgr& aqiMgr, const WeatherMgr& weatherMgr)
 {
+		uint8_t weatherReadings = weatherMgr.availableReadingTypes();
+
 	  // CUSTOM: Register any app-specific Screen objects
 	  splashScreen = new SplashScreen();
 	  homeScreen = new HomeScreen();
@@ -60,16 +62,21 @@ public:
 	  (void)aqiMgr;
 #endif
 #if defined(HAS_WEATHER_SENSOR)
-	  tempScreen = new TempScreen();
-	  humiScreen = new HumidityScreen();
-	  baroScreen = new BaroScreen();
-    weatherGraphScreen = new WeatherGraphScreen(weatherMgr);
-	  weatherGraphScreen->selectBuffer(settings->weatherSettings.graphRange);
-
-	  ScreenMgr.registerScreen("Temp", tempScreen);
-	  ScreenMgr.registerScreen("Humidity", humiScreen);
-	  ScreenMgr.registerScreen("Pressure", baroScreen);
-	  ScreenMgr.registerScreen("Temp-Graph", weatherGraphScreen);
+	  if (weatherReadings && READ_TEMP) {
+	  	tempScreen = new TempScreen();
+  	  weatherGraphScreen = new WeatherGraphScreen(weatherMgr);
+		  weatherGraphScreen->selectBuffer(settings->weatherSettings.graphRange);
+		  ScreenMgr.registerScreen("Temp", tempScreen);
+		  ScreenMgr.registerScreen("Temp-Graph", weatherGraphScreen);
+		}
+	  if (weatherReadings && READ_HUMI) {
+	  	humiScreen = new HumidityScreen();
+		  ScreenMgr.registerScreen("Humidity", humiScreen);
+		}
+	  if (weatherReadings && READ_PRES) {
+	  	baroScreen = new BaroScreen();
+		  ScreenMgr.registerScreen("Pressure", baroScreen);
+		}
 #else
 	  (void)weatherMgr;
 #endif
@@ -83,12 +90,12 @@ public:
 	  sequence.push_back(aqiGraphScreen);
 #endif
 #if defined(HAS_WEATHER_SENSOR)
-	  sequence.push_back(weatherGraphScreen);
-	  // TO DO: These should be conditioned on whether the sesnor is physically present
-	  // There may be temp, but no humidity or baro - or some other combo.
-	  sequence.push_back(tempScreen);
-	  sequence.push_back(humiScreen);
-	  sequence.push_back(baroScreen);
+	  if (weatherReadings && READ_TEMP) {
+	  	sequence.push_back(weatherGraphScreen);
+		  sequence.push_back(tempScreen);
+		}
+	  if (weatherReadings && READ_HUMI) sequence.push_back(humiScreen);
+	  if (weatherReadings && READ_PRES) sequence.push_back(baroScreen);
 #endif
 	  sequence.push_back(wtAppImpl->screens.weatherScreen);
 	  sequence.push_back(wtAppImpl->screens.forecastFirst3);

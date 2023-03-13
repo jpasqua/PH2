@@ -22,16 +22,16 @@
 //                                  WebThing Includes
 #include <DataBroker.h>
 #include <WebUI.h>
-#include <clients/BlynkMgr.h>
+#include <clients/AIOMgr.h>
 #include <sensors/WeatherUtils.h>
-#include <clients/WeatherBlynkPublisher.h>
-#include <clients/AQIBlynkPublisher.h>
+#include <clients/AIO_WeatherPublisher.h>
+#include <clients/AIO_AQIPublisher.h>
 //                                  WebThingApp Includes
 #include <gui/Display.h>
 #include <gui/ScreenMgr.h>
 #include <plugins/PluginMgr.h>
 #include <plugins/common/GenericPlugin.h>
-#include <plugins/common/BlynkPlugin.h>
+#include <plugins/common/AIOPlugin.h>
 //                                  Local Includes
 #include "PurpleHazeApp.h"
 #include "PHSettings.h"
@@ -72,7 +72,7 @@ Plugin* pluginFactory(const String& type) {
 
   // CUSTOM: Choose which plugins you'd like to load
   if      (type.equalsIgnoreCase("generic")) { p = new GenericPlugin(); }
-  else if (type.equalsIgnoreCase("blynk"))   { p = new BlynkPlugin();   }  
+  else if (type.equalsIgnoreCase("aio"))   { p = new AIOPlugin();   }  
 
   if (p == NULL) {
     Log.warning("Unrecognized plugin type: %s", type.c_str());
@@ -138,16 +138,13 @@ void PurpleHazeApp::app_loop() {
   aqiMgr.loop();
 #endif
 
-  BlynkMgr::loop();
 }
 
 void PurpleHazeApp::app_initClients() {
   // CUSTOM: If your app has any app-specific clients, initilize them now
 
   ScreenMgr.showActivityIcon(AppTheme::Color_Updating);
-
-  prepBlynk();
-
+  prepAIO();
   ScreenMgr.hideActivityIcon();
 }
 
@@ -172,7 +169,7 @@ void PurpleHazeApp::app_conditionalUpdate(bool force) {
     weatherMgr.takeReadings(force);
   #endif
 
-  BlynkMgr::publish();
+  AIOMgr::publish();
 }
 
 Screen* PurpleHazeApp::app_registerScreens() {
@@ -240,19 +237,25 @@ void PurpleHazeApp::configModeCallback(const String &ssid, const String &ip) {
  *
  *----------------------------------------------------------------------------*/
 
-void PurpleHazeApp::prepBlynk() {
-  BlynkMgr::init(phSettings->blynkAPIKey);
+void PurpleHazeApp::prepAIO() {
+  if (phSettings->aio.username.isEmpty() || phSettings->aio.key.isEmpty()) {
+    Log.trace("PurpleHazeApp::prepAIO: AIO username or key is empty");
+    return;
+  }
+
+  AIOMgr::init(phSettings->aio.username, phSettings->aio.key);
+  AIOMgr::aio->setDefaultGroup(phSettings->aio.groupName.c_str());
 
   // ----- Register the BME Publisher
   #if defined(HAS_WEATHER_SENSOR)
-    WeatherBlynkPublisher* bp = new WeatherBlynkPublisher(&weatherMgr);
-    BlynkMgr::registerPublisher(bp);
+    AIO_WeatherPublisher* wp = new AIO_WeatherPublisher(&weatherMgr);
+    AIOMgr::registerPublisher(wp);
   #endif
 
   // ----- Register the AQI Publisher
   #if defined(HAS_AQI_SENSOR)
-    AQIBlynkPublisher* ap = new AQIBlynkPublisher(&aqiMgr);
-    BlynkMgr::registerPublisher(ap);
+    AIO_AQIPublisher* ap = new AIO_AQIPublisher(&aqiMgr);
+    AIOMgr::registerPublisher(ap);
   #endif
 }  
 

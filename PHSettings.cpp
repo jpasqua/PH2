@@ -72,7 +72,9 @@ PHSettings::PHSettings() {
 void PHSettings::fromJSON(const JsonDocument &doc) {
   description = (doc["description"]|"Environment Sensor");
   // if (description.isEmpty() || description == "null") description = String("Environment Sensor");
-  blynkAPIKey = String(doc["blynkAPIKey"]|"");
+  aio.username = String(doc["aioUsername"]|"");
+  aio.key = String(doc["aioKey"]|"");
+  aio.groupName = String(doc["aioGroup"]|"");
   iBright = doc[F("iBright")] | 80;
 
   aqiSettings.fromJSON(doc);
@@ -82,7 +84,9 @@ void PHSettings::fromJSON(const JsonDocument &doc) {
 
 void PHSettings::toJSON(JsonDocument &doc) {
   doc["description"] = description;
-  doc["blynkAPIKey"] = blynkAPIKey;
+  doc["aioUsername"] = aio.username;
+  doc["aioKey"] = aio.key;
+  doc["aioGroup"] = aio.groupName;
   doc[F("iBright")] = iBright;
 
   aqiSettings.toJSON(doc);
@@ -93,7 +97,9 @@ void PHSettings::toJSON(JsonDocument &doc) {
 void PHSettings::logSettings() {
   Log.verbose(F("PurpleHaze Settings"));
   Log.verbose(F("  description = %s"), description.c_str());
-  Log.verbose(F("  blynkAPIKey = %s"), blynkAPIKey.c_str());
+  Log.verbose(F("  aio.username = %s"), aio.username.c_str());
+  Log.verbose(F("  aio.key = %s"), aio.key.c_str());
+  Log.verbose(F("  aio.groupName = %s"), aio.groupName.c_str());
   Log.verbose(F("  indicator brightness: %d"), iBright);
   aqiSettings.logSettings();
   weatherSettings.logSettings();
