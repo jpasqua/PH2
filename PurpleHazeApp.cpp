@@ -24,6 +24,7 @@
 #include <WebUI.h>
 #include <clients/AIOMgr.h>
 #include <sensors/WeatherUtils.h>
+#include <clients/AIO_DevReadingsPublisher.h>
 #include <clients/AIO_WeatherPublisher.h>
 #include <clients/AIO_AQIPublisher.h>
 //                                  WebThingApp Includes
@@ -93,7 +94,7 @@ void PurpleHazeApp::create() {
   PluginMgr::setFactory(pluginFactory);
   PurpleHazeApp* app = new PurpleHazeApp(&theSettings);
 
-  app->begin();
+  app->begin(true);
 }
 
 
@@ -168,6 +169,8 @@ void PurpleHazeApp::app_conditionalUpdate(bool force) {
   #if defined(HAS_WEATHER_SENSOR)
     weatherMgr.takeReadings(force);
   #endif
+
+  devReadingsMgr.takeReadings(force);
 
   AIOMgr::publish();
 }
@@ -248,15 +251,16 @@ void PurpleHazeApp::prepAIO() {
 
   // ----- Register the BME Publisher
   #if defined(HAS_WEATHER_SENSOR)
-    AIO_WeatherPublisher* wp = new AIO_WeatherPublisher(&weatherMgr);
-    AIOMgr::registerPublisher(wp);
+    AIOMgr::registerPublisher(new AIO_WeatherPublisher(&weatherMgr));
   #endif
 
   // ----- Register the AQI Publisher
   #if defined(HAS_AQI_SENSOR)
-    AIO_AQIPublisher* ap = new AIO_AQIPublisher(&aqiMgr);
-    AIOMgr::registerPublisher(ap);
+    AIOMgr::registerPublisher(new AIO_AQIPublisher(&aqiMgr));
   #endif
+
+  // ----- Register the DevReadings Publisher
+  AIOMgr::registerPublisher(new AIO_DevReadingsPublisher(&devReadingsMgr));
 }  
 
 //

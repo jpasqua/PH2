@@ -29,6 +29,7 @@
 #include <WTAppImpl.h>
 #include <sensors/WeatherMgr.h>
 #include <sensors/AQIMgr.h>
+#include <sensors/DevReadingsMgr.h>
 //                                  Local Includes
 #include "src/hardware/HWConfig.h"
 #include "PHSettings.h"
@@ -51,6 +52,7 @@ public:
   // CUSTOM: Data defined by this app which is available to the whole app
   AQIMgr aqiMgr;
   WeatherMgr weatherMgr;
+  DevReadingsMgr devReadingsMgr;
 
   Indicator* sensorIndicator;
   Indicator* qualityIndicator;
@@ -80,6 +82,7 @@ protected:
   virtual void configModeCallback(const String &ssid, const String &ip) override;
 
 private:
+
   void prepAIO();
   void prepSensors();
   void configureDisplay();
