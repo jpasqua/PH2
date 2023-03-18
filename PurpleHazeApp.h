@@ -88,6 +88,8 @@ private:
   void configureDisplay();
   void configurePins();
   void configureIndicators();
+  void aboutToSleep();
+
 
   SecondarySerial streamToSensor;
 };

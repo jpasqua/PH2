@@ -109,7 +109,8 @@ PurpleHazeApp::PurpleHazeApp(PHSettings* settings) :
     WTAppImpl(AppName, AppPrefix, VersionString, settings)
 {
   // CUSTOM: Perform any object initialization here
-  // None needed in this case
+  std::function<void()> sleepCB = [this]() { this->aboutToSleep(); };
+  WebThing::notifyBeforeDeepSleep(sleepCB);
 }
 
 
@@ -239,6 +240,10 @@ void PurpleHazeApp::configModeCallback(const String &ssid, const String &ip) {
  * Private functions
  *
  *----------------------------------------------------------------------------*/
+
+void PurpleHazeApp::aboutToSleep() {
+  Display.setBrightness(0);
+}
 
 void PurpleHazeApp::prepAIO() {
   if (phSettings->aio.username.isEmpty() || phSettings->aio.key.isEmpty()) {
