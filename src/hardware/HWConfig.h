@@ -48,6 +48,7 @@
 #define Config_ESP8266WithOLED  3
 #define Config_PH1_Board        4
 #define Config_ESP32Mini        5
+#define Config_D1Mini_JAWS      6
 
 
 //------------------------------------------------------------------------------
@@ -57,16 +58,12 @@
 // that are present on your particular board. For the BME and AQI sensors you
 // may choose PRESENT, MOCK, or leave it undefined.
 
-#define BaseConfig  Config_PH2_Board
+#define BaseConfig  Config_D1Mini_Enc
 #define GUI_DSPLY   PRESENT
 #define BME_SENSOR  PRESENT
-// #define DHT22_SENSOR PRESENT
-#define AQI_SENSOR  PRESENT
 
-// #define BaseConfig  Config_PH1_Board
-// #define AQI_SENSOR  PRESENT
-
-
+// #define BaseConfig  Config_D1Mini_JAWS
+// #define BME_SENSOR  PRESENT
 
 
 // SECTION 4: [BOLERPLATE] The definitions of the available configurations and dependent definitions
