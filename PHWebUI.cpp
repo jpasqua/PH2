@@ -94,10 +94,6 @@ namespace PHWebUI {
         else if (key == "P50")      val.concat(aqiReadings.particles_50um);
         else if (key == "P100")     val.concat(aqiReadings.particles_100um);
         else if (key == "TMST")     val = Output::formattedTime(Basics::wallClockFromMillis(aqiReadings.timestamp));
-        else if (key == "MA10")     val.concat(round(phApp->aqiMgr.pm25env_10min.getAverage()));
-        else if (key == "MA30")     val.concat(round(phApp->aqiMgr.pm25env_30min.getAverage()));
-        else if (key == "MA1H")     val.concat(round(phApp->aqiMgr.pm25env_1hr.getAverage()));
-        else if (key == "MA6H")     val.concat(round(phApp->aqiMgr.pm25env_6hr.getAverage()));
         else return false;
         return true;
       #else

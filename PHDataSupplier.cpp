@@ -36,10 +36,6 @@ namespace PHDataSupplier {
     else if (key == "p50")      val.concat(aqiReadings.particles_50um);
     else if (key == "p100")     val.concat(aqiReadings.particles_100um);
     else if (key == "tmst")     val = Output::formattedTime(Basics::wallClockFromMillis(aqiReadings.timestamp));
-    else if (key == "ma10")     val.concat(round(phApp->aqiMgr.pm25env_10min.getAverage()));
-    else if (key == "ma30")     val.concat(round(phApp->aqiMgr.pm25env_30min.getAverage()));
-    else if (key == "ma1h")     val.concat(round(phApp->aqiMgr.pm25env_1hr.getAverage()));
-    else if (key == "ma6h")     val.concat(round(phApp->aqiMgr.pm25env_6hr.getAverage()));
   }
 }
 
