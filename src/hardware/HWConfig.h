@@ -61,8 +61,9 @@
 // may choose PRESENT, MOCK, or leave it undefined.
 
 
-// #define BaseConfig  Config_ESP32Mini
-// #define AQI_SENSOR  PRESENT
+#define BaseConfig  Config_ESP32Mini
+#define AQI_SENSOR  PRESENT
+#define BME_SENSOR  PRESENT
 
 // #define BaseConfig  Config_PH2_Board
 // // #define GUI_DSPLY   PRESENT
@@ -81,10 +82,10 @@
 // #define BME_SENSOR  PRESENT
 // // #define AQI_SENSOR  PRESENT
 
-#define BaseConfig  Config_ESP32WithOLED
-#define GUI_DSPLY   PRESENT
-#define BME_SENSOR  PRESENT
-// #define AQI_SENSOR  PRESENT
+// #define BaseConfig  Config_ESP32WithOLED
+// #define GUI_DSPLY   PRESENT
+// #define BME_SENSOR  PRESENT
+// // #define AQI_SENSOR  PRESENT
 
 
 //------------------------------------------------------------------------------
