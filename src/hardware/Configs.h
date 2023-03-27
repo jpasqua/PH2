@@ -267,6 +267,49 @@
   constexpr neoPixelType NEOPIXEL_TYPE = 0;     // Not Used
 
 
+#elif (BaseConfig == Config_ESP32WithOLED)
+  /*------------------------------------------------------------------------------
+   *
+   * Config for an ESP32 with embedded 0.96" OLED in a small enclosure which
+   * limits what may be connected and how. This configuration does not support
+   * a physical AQI sensor (though you can mock one).
+   * - WEMOS LOLIN32
+   *----------------------------------------------------------------------------*/
+
+  // ----- I2C Settings
+  constexpr uint8_t SDA_PIN = 5;
+  constexpr uint8_t SCL_PIN = 4;
+
+  // ----- Display Type
+  constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SSD1306;
+  constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
+
+  // ----- Buttons
+  constexpr uint8_t physicalButtons[] = { 25, 13 };
+  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+
+  // ----- Air Quality Sensor
+  constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
+  constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+  #if (AQI_SENSOR == PRESENT)
+    #error("An AQI Sensor may not be used in this configuration")
+  #elif (AQI_SENSOR == MOCK)
+    #define PMS5003_READINGS PMS5003_AVAIL_READINGS
+  #endif
+
+  #if (BME_SENSOR == PRESENT)
+    #define BME280_READINGS (BME280_AVAIL_READINGS)
+    constexpr uint8_t BME_I2C_ADDR = 0x76;
+  #elif (BME_SENSOR == MOCK)
+    #define BME280_READINGS (BME280_AVAIL_READINGS)
+    constexpr uint8_t BME_I2C_ADDR = 0x00;
+  #endif
+
+  // ----- Indicators
+  constexpr uint8_t NEOPIXEL_PIN = UNUSED_PIN;
+  constexpr neoPixelType NEOPIXEL_TYPE = 0;     // Not Used
+
+
 #elif (BaseConfig == Config_ESP32Mini)
   /*------------------------------------------------------------------------------
    *

@@ -34,9 +34,11 @@
 #define MOCK        2
 
 
+//------------------------------------------------------------------------------
 // SECTION 1: [BOILERPLATE] Select the general class of Display Device we're using.
 // The available types are defined in DeviceTypes.h. This config provides
 // options based on DEVICE_TYPE_OLED, including NONE.
+//------------------------------------------------------------------------------
 #define DEVICE_TYPE DEVICE_TYPE_OLED
 #include <gui/Display.h>
 
@@ -49,7 +51,7 @@
 #define Config_PH1_Board        4
 #define Config_ESP32Mini        5
 #define Config_D1Mini_JAWS      6
-
+#define Config_ESP32WithOLED    7
 
 //------------------------------------------------------------------------------
 // --------------------- SECTION 3: CUSTOMIZE THIS SECTION ONLY ----------------
@@ -58,15 +60,37 @@
 // that are present on your particular board. For the BME and AQI sensors you
 // may choose PRESENT, MOCK, or leave it undefined.
 
-#define BaseConfig  Config_D1Mini_Enc
-#define GUI_DSPLY   PRESENT
-#define BME_SENSOR  PRESENT
+
+// #define BaseConfig  Config_ESP32Mini
+// #define AQI_SENSOR  PRESENT
+
+// #define BaseConfig  Config_PH2_Board
+// // #define GUI_DSPLY   PRESENT
+// #define BME_SENSOR  PRESENT
+// #define AQI_SENSOR  PRESENT
+
+// #define BaseConfig  Config_D1Mini_Enc
+// #define GUI_DSPLY   PRESENT
+// #define BME_SENSOR  PRESENT
 
 // #define BaseConfig  Config_D1Mini_JAWS
 // #define BME_SENSOR  PRESENT
 
+// #define BaseConfig  Config_ESP8266WithOLED
+// #define GUI_DSPLY   PRESENT
+// #define BME_SENSOR  PRESENT
+// // #define AQI_SENSOR  PRESENT
 
-// SECTION 4: [BOLERPLATE] The definitions of the available configurations and dependent definitions
+#define BaseConfig  Config_ESP32WithOLED
+#define GUI_DSPLY   PRESENT
+#define BME_SENSOR  PRESENT
+// #define AQI_SENSOR  PRESENT
+
+
+//------------------------------------------------------------------------------
+// SECTION 4: [BOLERPLATE] The definitions of the available configurations and
+// dependent definitions
+//------------------------------------------------------------------------------
 #include "Configs.h"
 
 #if defined(BME280_READINGS) || defined (DHT22_READINGS) || defined(DS18B20_READINGS)
@@ -83,7 +107,9 @@
 #endif
 
 
+//------------------------------------------------------------------------------
 // SECTION 5: Declare and Initialize the HWConfig object
+//------------------------------------------------------------------------------
 
 class HWConfig {
 public:
