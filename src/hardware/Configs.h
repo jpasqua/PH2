@@ -289,8 +289,8 @@
   constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
 
   // ----- Air Quality Sensor
-  constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-  constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+  constexpr uint8_t SENSOR_RX_PIN = 16;
+  constexpr uint8_t SENSOR_TX_PIN = 17;
   #if (AQI_SENSOR == PRESENT)
     #error("An AQI Sensor may not be used in this configuration")
   #elif (AQI_SENSOR == MOCK)
@@ -342,7 +342,6 @@
     constexpr uint8_t SENSOR_TX_PIN = 17;
   #elif (AQI_SENSOR == MOCK)
     #define PMS5003_READINGS PMS5003_AVAIL_READINGS
-    #define USE_SW_SERIAL 1
     constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
     constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
   #else
@@ -359,8 +358,8 @@
   #endif
 
   // ----- Indicators
-  constexpr uint8_t NEOPIXEL_PIN = 21;
-  constexpr neoPixelType NEOPIXEL_TYPE = NEO_GRB + NEO_KHZ800;
+  constexpr uint8_t NEOPIXEL_PIN = 5;
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_RGB + NEO_KHZ800;
 
 #endif
 
