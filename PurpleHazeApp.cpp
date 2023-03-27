@@ -152,8 +152,9 @@ void PurpleHazeApp::app_initClients() {
 
 void PurpleHazeApp::app_conditionalUpdate(bool force) {
   // CUSTOM: Update any app-specific clients
-
+  static bool startingUp = true;
   (void)force;
+
   #if defined(HAS_AQI_SENSOR)
     static uint32_t lastTimestamp = 0;
 
@@ -173,7 +174,8 @@ void PurpleHazeApp::app_conditionalUpdate(bool force) {
 
   devReadingsMgr.takeReadings(force);
 
-  AIOMgr::publish();
+  if (!startingUp) AIOMgr::publish();
+  startingUp = false;
 }
 
 Screen* PurpleHazeApp::app_registerScreens() {
@@ -247,6 +249,7 @@ void PurpleHazeApp::configModeCallback(const String &ssid, const String &ip) {
  *----------------------------------------------------------------------------*/
 
 void PurpleHazeApp::aboutToSleep() {
+  AIOMgr::publish();
   Display.setBrightness(0);
 }
 
