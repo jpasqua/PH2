@@ -24,7 +24,6 @@
 #include HEADER(MainClassName)
 //--------------- End:    Includes ---------------------------------------------
 
-
 void setup() {
   MainClassName::create();  // Creates and starts the WTApp singleton
 }

@@ -201,9 +201,14 @@ Screen* PurpleHazeApp::app_registerScreens() {
  *----------------------------------------------------------------------------*/
 
 void PurpleHazeApp::app_configureHW() {
-  // CUSTOM: IConfigure/nitialize any app-specific hardware here
+  // CUSTOM: Configure/Initialize any app-specific hardware here
   // At this point, the settings have been read, but almost nothing
   // else has been done.
+  // Wire.begin(5, 4); -- WORKED
+  if (hwConfig.corePins.scl != UNUSED_PIN && hwConfig.corePins.sda != UNUSED_PIN) {
+    // Explicitly set the I2C Pins
+    Wire.begin((int)hwConfig.corePins.sda, (int)hwConfig.corePins.scl);
+  }
 
   configureDisplay(); // Sets display parameters
   configurePins();
@@ -311,11 +316,6 @@ void PurpleHazeApp::configurePins() {
       pinMode(pin, OUTPUT);
       digitalWrite(pin, LOW);      
     }
-  }
-
-  if (hwConfig.corePins.scl != UNUSED_PIN && hwConfig.corePins.sda != UNUSED_PIN) {
-    // Override the deault I2C Pins
-    Wire.begin(SDA_PIN, SCL_PIN);
   }
 }
 
