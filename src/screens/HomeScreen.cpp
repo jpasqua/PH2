@@ -122,13 +122,17 @@ void HomeScreen::drawReadings() {
     readings[1] = String(phApp->owmClient->weather.readings.temp, 0);
     readings[2] = String(phApp->owmClient->weather.readings.humidity, 0);
     lastReadingTime = phApp->aqiMgr.getLastReadings().timestamp;
-  #else
+  #elif defined(HAS_WEATHER_SENSOR)
     // TEMP    HUMI       BARO
     auto wReadings = phApp->weatherMgr.getLastReadings();
     readings[0] = String(Output::temp(wReadings.temp), 0);
     readings[1] = String(wReadings.humidity, 0);
     readings[2] = String(Output::baro(wReadings.pressure), 1);
     lastReadingTime = phApp->weatherMgr.getLastReadings().timestamp;
+  #else
+    readings[0] = String("N/A");
+    readings[1] = String(phApp->owmClient->weather.readings.temp, 0);
+    readings[2] = String(phApp->owmClient->weather.readings.humidity, 0);
   #endif
 
 
