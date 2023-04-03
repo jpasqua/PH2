@@ -1,11 +1,8 @@
 .DS_Store
-**/.DS_Store
-**/settings.json
+settings.json
 /data/wt
 /data/wta
-/data/plugins/settings.json
 data/aqihist.json
 data/wthrhist.json
-**settings.json
 resources/prepForUpload.bash
-.vscode/c_cpp_properties.json
+.vscode/
