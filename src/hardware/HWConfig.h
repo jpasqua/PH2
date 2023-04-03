@@ -52,6 +52,8 @@
 #define Config_ESP32Mini        5
 #define Config_D1Mini_JAWS      6
 #define Config_ESP32WithOLED    7
+#define Config_PH2_ESP32        8
+
 
 //------------------------------------------------------------------------------
 // --------------------- SECTION 3: CUSTOMIZE THIS SECTION ONLY ----------------
@@ -60,10 +62,16 @@
 // that are present on your particular board. For the BME and AQI sensors you
 // may choose PRESENT, MOCK, or leave it undefined.
 
-
-#define BaseConfig  Config_ESP32Mini
+#define BaseConfig  Config_PH2_ESP32
+#define GUI_DSPLY   PRESENT
 #define AQI_SENSOR  PRESENT
 #define BME_SENSOR  PRESENT
+
+
+// #define BaseConfig  Config_ESP32Mini
+// #define GUI_DSPLY   PRESENT
+// #define AQI_SENSOR  PRESENT
+// #define BME_SENSOR  PRESENT
 
 // #define BaseConfig  Config_PH2_Board
 // // #define GUI_DSPLY   PRESENT

@@ -361,6 +361,58 @@
   constexpr uint8_t NEOPIXEL_PIN = 5;
   constexpr neoPixelType NEOPIXEL_TYPE = NEO_RGB + NEO_KHZ800;
 
+
+#elif (BaseConfig == Config_PH2_ESP32)
+  /*------------------------------------------------------------------------------
+   *
+   * Config for an ESP32 D1 Mini built up with discrete components
+   *
+   *----------------------------------------------------------------------------*/
+
+  // ----- I2C Settings
+  constexpr uint8_t SDA_PIN = 21;
+  constexpr uint8_t SCL_PIN = 22;
+
+  // ----- Display Type
+  #if defined(GUI_DSPLY)
+    constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SH1106;
+    constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
+  #else
+    constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::NONE;
+    constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x00;
+  #endif
+
+  // ----- Buttons
+  constexpr uint8_t physicalButtons[] = { 14, 27 };
+  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+
+
+  // ----- Air Quality Sensor
+  #if (AQI_SENSOR == PRESENT)
+    #define PMS5003_READINGS PMS5003_AVAIL_READINGS
+    constexpr uint8_t SENSOR_RX_PIN = 16;
+    constexpr uint8_t SENSOR_TX_PIN = 17;
+  #elif (AQI_SENSOR == MOCK)
+    #define PMS5003_READINGS PMS5003_AVAIL_READINGS
+    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
+    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+  #else
+    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
+    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+  #endif
+
+  #if (BME_SENSOR == PRESENT)
+    #define BME280_READINGS (BME280_AVAIL_READINGS)
+    constexpr uint8_t BME_I2C_ADDR = 0x76;
+  #elif (BME_SENSOR == MOCK)
+    #define BME280_READINGS (BME280_AVAIL_READINGS)
+    constexpr uint8_t BME_I2C_ADDR = 0x00;
+  #endif
+
+  // ----- Indicators
+  constexpr uint8_t NEOPIXEL_PIN = 5;
+  constexpr neoPixelType NEOPIXEL_TYPE = NEO_RGB + NEO_KHZ800;
+
 #endif
 
 
