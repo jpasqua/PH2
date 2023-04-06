@@ -28,8 +28,6 @@
 
 
 // SECTION 0: [BOILERPLATE] Generic definitions
-#define UNUSED_PIN 255
-
 #define PRESENT     1
 #define MOCK        2
 
@@ -123,19 +121,19 @@
 class HWConfig {
 public:
   struct CorePins {
-    uint8_t scl;
-    uint8_t sda;
+    int scl;
+    int sda;
   };
 
   const CorePins corePins;
   const DisplayDeviceOptions displayDeviceOptions;
-  const uint8_t* physicalButtons;
-  const uint8_t  nPhysicalButtons;
-  const uint8_t* syntheticGrounds;
-  const uint8_t  nSyntheticGrounds;
+  const Basics::Pin*    physicalButtons;
+  const uint8_t         nPhysicalButtons;
+  const Basics::Pin*    syntheticGrounds;
+  const uint8_t         nSyntheticGrounds;
 
-  const uint8_t advanceButton;
-  const uint8_t previousButton;
+  const Basics::Pin advanceButton;
+  const Basics::Pin previousButton;
 };
 
 constexpr HWConfig hwConfig {

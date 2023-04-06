@@ -11,7 +11,7 @@ public:
   Stream* s;
 
   void begin() {
-    if (SENSOR_RX_PIN == UNUSED_PIN) {
+    if (SENSOR_RX_PIN == Basics::UnusedPin) {
       // We don't have a serial device. This might be used when mocking an implementation.
       s = nullptr;
       return;

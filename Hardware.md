@@ -60,7 +60,7 @@ void CurrencyMonApp::app_configureHW() {
   // CUSTOM: Register any physical buttons that are connected
   for (int i = 0; i < hwConfig.nPhysicalButtons; i++) {
     uint8_t pin = hwConfig.physicalButtons[i];
-    if (pin != UNUSED_PIN) {
+    if (pin != Basics::UnusedPin) {
       WebThing::buttonMgr.addButton(pin);
     }
   }

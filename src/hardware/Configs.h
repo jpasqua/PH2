@@ -19,8 +19,8 @@
    *----------------------------------------------------------------------------*/
 
   // ----- I2C Settings
-  constexpr uint8_t SDA_PIN = D3;
-  constexpr uint8_t SCL_PIN = D5;
+  constexpr Basics::Pin SDA_PIN = D3;
+  constexpr Basics::Pin SCL_PIN = D5;
 
   // ----- Display Type
   #if defined(GUI_DSPLY)
@@ -32,22 +32,22 @@
   #endif
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { D4, D7 };
-  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+  constexpr Basics::Pin physicalButtons[] = { D4, D7 };
+  constexpr Basics::Pin syntheticGrounds[] = { Basics::UnusedPin };
 
   // ----- Air Quality Sensor
   #define USE_SW_SERIAL 1
   #if (AQI_SENSOR == PRESENT)
     #define PMS5003_READINGS PMS5003_AVAIL_READINGS
-    constexpr uint8_t SENSOR_RX_PIN = D6;
-    constexpr uint8_t SENSOR_TX_PIN = D8;
+    constexpr Basics::Pin SENSOR_RX_PIN = D6;
+    constexpr Basics::Pin SENSOR_TX_PIN = D8;
   #elif (AQI_SENSOR == MOCK)
     #define PMS5003_READINGS PMS5003_AVAIL_READINGS
-    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+    constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+    constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #else
-    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+    constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+    constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #endif
 
   #if (BME_SENSOR == PRESENT)
@@ -61,7 +61,7 @@
   #endif
 
   // ----- Indicators
-  constexpr uint8_t NEOPIXEL_PIN = D2;
+  constexpr Basics::Pin NEOPIXEL_PIN = D2;
   constexpr neoPixelType NEOPIXEL_TYPE = NEO_RGB + NEO_KHZ800;
 
 
@@ -76,8 +76,8 @@
    *----------------------------------------------------------------------------*/
 
   // ----- I2C Settings
-  constexpr uint8_t SDA_PIN = D3;
-  constexpr uint8_t SCL_PIN = D5;
+  constexpr Basics::Pin SDA_PIN = D3;
+  constexpr Basics::Pin SCL_PIN = D5;
 
   // ----- Display Type
   #if defined(GUI_DSPLY)
@@ -88,22 +88,22 @@
   #endif
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { UNUSED_PIN, UNUSED_PIN };
-  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+  constexpr Basics::Pin physicalButtons[] = { Basics::UnusedPin, Basics::UnusedPin };
+  constexpr Basics::Pin syntheticGrounds[] = { Basics::UnusedPin };
 
   // ----- Air Quality Sensor
   #define USE_SW_SERIAL 1
   #if (AQI_SENSOR == PRESENT)
     #define PMS5003_READINGS PMS5003_AVAIL_READINGS
-    constexpr uint8_t SENSOR_RX_PIN = D6;
-    constexpr uint8_t SENSOR_TX_PIN = D8;
+    constexpr Basics::Pin SENSOR_RX_PIN = D6;
+    constexpr Basics::Pin SENSOR_TX_PIN = D8;
   #elif (AQI_SENSOR == MOCK)
     #define PMS5003_READINGS PMS5003_AVAIL_READINGS
-    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+    constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+    constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #else
-    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+    constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+    constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #endif
 
   #if (BME_SENSOR == MOCK)
@@ -114,7 +114,7 @@
   #endif
 
   // ----- Indicators
-  constexpr uint8_t NEOPIXEL_PIN = D2;
+  constexpr Basics::Pin NEOPIXEL_PIN = D2;
   constexpr neoPixelType NEOPIXEL_TYPE = NEO_RGB + NEO_KHZ800;
 
 
@@ -128,8 +128,8 @@
    *----------------------------------------------------------------------------*/
 
   // ----- I2C Settings
-  constexpr uint8_t SDA_PIN = D2;
-  constexpr uint8_t SCL_PIN = D5;
+  constexpr Basics::Pin SDA_PIN = D2;
+  constexpr Basics::Pin SCL_PIN = D5;
 
   // ----- Display Type
   #if defined(GUI_DSPLY)
@@ -141,13 +141,13 @@
   #endif
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { D6, UNUSED_PIN };
-  constexpr uint8_t syntheticGrounds[] = { D8 };
+  constexpr Basics::Pin physicalButtons[] = { D6, Basics::UnusedPin };
+  constexpr Basics::Pin syntheticGrounds[] = { D8 };
 
   // ----- Air Quality Sensor
   #define USE_SW_SERIAL 1
-  constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-  constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+  constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+  constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #if (AQI_SENSOR == PRESENT)
     #error("An AQI Sensor may not be used in this configuration")
   #elif (AQI_SENSOR == MOCK)
@@ -168,7 +168,7 @@
   #endif
 
   // ----- Indicators
-  constexpr uint8_t NEOPIXEL_PIN = UNUSED_PIN;
+  constexpr Basics::Pin NEOPIXEL_PIN = Basics::UnusedPin;
   constexpr neoPixelType NEOPIXEL_TYPE = 0;     // Not Used
 
 #elif (BaseConfig == Config_D1Mini_JAWS)
@@ -179,8 +179,8 @@
    *----------------------------------------------------------------------------*/
 
   // ----- I2C Settings
-  constexpr uint8_t SDA_PIN = D2;
-  constexpr uint8_t SCL_PIN = D1;
+  constexpr Basics::Pin SDA_PIN = D2;
+  constexpr Basics::Pin SCL_PIN = D1;
 
   // ----- Display Type
   #if defined(GUI_DSPLY)
@@ -192,13 +192,13 @@
   #endif
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { UNUSED_PIN, UNUSED_PIN };
-  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+  constexpr Basics::Pin physicalButtons[] = { Basics::UnusedPin, Basics::UnusedPin };
+  constexpr Basics::Pin syntheticGrounds[] = { Basics::UnusedPin };
 
   // ----- Air Quality Sensor
   #define USE_SW_SERIAL 1
-  constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-  constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+  constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+  constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #if (AQI_SENSOR == PRESENT)
     #error("An AQI Sensor may not be used in this configuration")
   #elif (AQI_SENSOR == MOCK)
@@ -219,7 +219,7 @@
   #endif
 
   // ----- Indicators
-  constexpr uint8_t NEOPIXEL_PIN = UNUSED_PIN;
+  constexpr Basics::Pin NEOPIXEL_PIN = Basics::UnusedPin;
   constexpr neoPixelType NEOPIXEL_TYPE = 0;     // Not Used
 
 
@@ -233,21 +233,21 @@
    *----------------------------------------------------------------------------*/
 
   // ----- I2C Settings
-  constexpr uint8_t SDA_PIN = D1;
-  constexpr uint8_t SCL_PIN = D2;
+  constexpr Basics::Pin SDA_PIN = D1;
+  constexpr Basics::Pin SCL_PIN = D2;
 
   // ----- Display Type
   constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SSD1306;
   constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { D3, UNUSED_PIN };
-  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+  constexpr Basics::Pin physicalButtons[] = { D3, Basics::UnusedPin };
+  constexpr Basics::Pin syntheticGrounds[] = { Basics::UnusedPin };
 
   // ----- Air Quality Sensor
   #define USE_SW_SERIAL 1
-  constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-  constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+  constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+  constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #if (AQI_SENSOR == PRESENT)
     #error("An AQI Sensor may not be used in this configuration")
   #elif (AQI_SENSOR == MOCK)
@@ -263,7 +263,7 @@
   #endif
 
   // ----- Indicators
-  constexpr uint8_t NEOPIXEL_PIN = UNUSED_PIN;
+  constexpr Basics::Pin NEOPIXEL_PIN = Basics::UnusedPin;
   constexpr neoPixelType NEOPIXEL_TYPE = 0;     // Not Used
 
 
@@ -277,20 +277,20 @@
    *----------------------------------------------------------------------------*/
 
   // ----- I2C Settings
-  constexpr uint8_t SDA_PIN = 5;
-  constexpr uint8_t SCL_PIN = 4;
+  constexpr Basics::Pin SDA_PIN = 5;
+  constexpr Basics::Pin SCL_PIN = 4;
 
   // ----- Display Type
   constexpr auto DISPLAY_DRIVER = DisplayDeviceOptions::DeviceType::SSD1306;
   constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3c;
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { 25, 13 };
-  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+  constexpr Basics::Pin physicalButtons[] = { 25, 13 };
+  constexpr Basics::Pin syntheticGrounds[] = { Basics::UnusedPin };
 
   // ----- Air Quality Sensor
-  constexpr uint8_t SENSOR_RX_PIN = 16;
-  constexpr uint8_t SENSOR_TX_PIN = 17;
+  constexpr Basics::Pin SENSOR_RX_PIN = 16;
+  constexpr Basics::Pin SENSOR_TX_PIN = 17;
   #if (AQI_SENSOR == PRESENT)
     #error("An AQI Sensor may not be used in this configuration")
   #elif (AQI_SENSOR == MOCK)
@@ -306,7 +306,7 @@
   #endif
 
   // ----- Indicators
-  constexpr uint8_t NEOPIXEL_PIN = UNUSED_PIN;
+  constexpr Basics::Pin NEOPIXEL_PIN = Basics::UnusedPin;
   constexpr neoPixelType NEOPIXEL_TYPE = 0;     // Not Used
 
 
@@ -318,8 +318,8 @@
    *----------------------------------------------------------------------------*/
 
   // ----- I2C Settings
-  constexpr uint8_t SDA_PIN = 21;
-  constexpr uint8_t SCL_PIN = 22;
+  constexpr Basics::Pin SDA_PIN = 21;
+  constexpr Basics::Pin SCL_PIN = 22;
 
   // ----- Display Type
   #if defined(GUI_DSPLY)
@@ -331,22 +331,22 @@
   #endif
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { 13, UNUSED_PIN };
-  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+  constexpr Basics::Pin physicalButtons[] = { 13, Basics::UnusedPin };
+  constexpr Basics::Pin syntheticGrounds[] = { Basics::UnusedPin };
 
 
   // ----- Air Quality Sensor
   #if (AQI_SENSOR == PRESENT)
     #define PMS5003_READINGS PMS5003_AVAIL_READINGS
-    constexpr uint8_t SENSOR_RX_PIN = 16;
-    constexpr uint8_t SENSOR_TX_PIN = 17;
+    constexpr Basics::Pin SENSOR_RX_PIN = 16;
+    constexpr Basics::Pin SENSOR_TX_PIN = 17;
   #elif (AQI_SENSOR == MOCK)
     #define PMS5003_READINGS PMS5003_AVAIL_READINGS
-    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+    constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+    constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #else
-    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+    constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+    constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #endif
 
   #if (BME_SENSOR == PRESENT)
@@ -358,7 +358,7 @@
   #endif
 
   // ----- Indicators
-  constexpr uint8_t NEOPIXEL_PIN = 5;
+  constexpr Basics::Pin NEOPIXEL_PIN = 5;
   constexpr neoPixelType NEOPIXEL_TYPE = NEO_RGB + NEO_KHZ800;
 
 
@@ -370,8 +370,8 @@
    *----------------------------------------------------------------------------*/
 
   // ----- I2C Settings
-  constexpr uint8_t SDA_PIN = 21;
-  constexpr uint8_t SCL_PIN = 22;
+  constexpr Basics::Pin SDA_PIN = 21;
+  constexpr Basics::Pin SCL_PIN = 22;
 
   // ----- Display Type
   #if defined(GUI_DSPLY)
@@ -383,22 +383,22 @@
   #endif
 
   // ----- Buttons
-  constexpr uint8_t physicalButtons[] = { 14, 27 };
-  constexpr uint8_t syntheticGrounds[] = { UNUSED_PIN };
+  constexpr Basics::Pin physicalButtons[] = { 27, 14 };
+  constexpr Basics::Pin syntheticGrounds[] = { Basics::UnusedPin };
 
 
   // ----- Air Quality Sensor
   #if (AQI_SENSOR == PRESENT)
     #define PMS5003_READINGS PMS5003_AVAIL_READINGS
-    constexpr uint8_t SENSOR_RX_PIN = 16;
-    constexpr uint8_t SENSOR_TX_PIN = 17;
+    constexpr Basics::Pin SENSOR_RX_PIN = 16;
+    constexpr Basics::Pin SENSOR_TX_PIN = 17;
   #elif (AQI_SENSOR == MOCK)
     #define PMS5003_READINGS PMS5003_AVAIL_READINGS
-    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+    constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+    constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #else
-    constexpr uint8_t SENSOR_RX_PIN = UNUSED_PIN;
-    constexpr uint8_t SENSOR_TX_PIN = UNUSED_PIN;
+    constexpr Basics::Pin SENSOR_RX_PIN = Basics::UnusedPin;
+    constexpr Basics::Pin SENSOR_TX_PIN = Basics::UnusedPin;
   #endif
 
   #if (BME_SENSOR == PRESENT)
@@ -410,7 +410,7 @@
   #endif
 
   // ----- Indicators
-  constexpr uint8_t NEOPIXEL_PIN = 5;
+  constexpr Basics::Pin NEOPIXEL_PIN = 13;
   constexpr neoPixelType NEOPIXEL_TYPE = NEO_RGB + NEO_KHZ800;
 
 #endif

@@ -94,7 +94,7 @@ void PurpleHazeApp::create() {
   PluginMgr::setFactory(pluginFactory);
   PurpleHazeApp* app = new PurpleHazeApp(&theSettings);
 
-  app->begin(true);
+  app->begin(true, hwConfig.corePins.sda, hwConfig.corePins.scl);
 }
 
 
@@ -206,25 +206,12 @@ void PurpleHazeApp::app_configureHW() {
   // CUSTOM: Configure/Initialize any app-specific hardware here
   // At this point, the settings have been read, but almost nothing
   // else has been done.
-  // Wire.begin(5, 4); -- WORKED
-  if (hwConfig.corePins.scl != UNUSED_PIN && hwConfig.corePins.sda != UNUSED_PIN) {
-    // Explicitly set the I2C Pins
-    Wire.begin((int)hwConfig.corePins.sda, (int)hwConfig.corePins.scl);
-  }
 
   configureDisplay(); // Sets display parameters
   configurePins();
   configureIndicators();
   prepSensors();
   
-  // CUSTOM: Register any physical buttons that are connected
-  for (int i = 0; i < hwConfig.nPhysicalButtons; i++) {
-    uint8_t pin = hwConfig.physicalButtons[i];
-    if (pin != UNUSED_PIN) {
-      WebThing::buttonMgr.addButton(pin);
-    }
-  }
-
   // Technically this should be done later, since ScreenMgr.init() hasn't been
   // called yet.
   ScreenMgr.setSequenceButtons(hwConfig.advanceButton, hwConfig.previousButton);
@@ -259,7 +246,13 @@ void PurpleHazeApp::prepAIO() {
     return;
   }
 
+    auto aioBusyCallBack = [this](bool busy) {
+      if (busy) ScreenMgr.showActivityIcon(AppTheme::Color_Updating);
+      else ScreenMgr.hideActivityIcon();
+    };
+
   AIOMgr::init(phSettings->aio.username, phSettings->aio.key);
+  AIOMgr::setBusyCB(aioBusyCallBack);
   AIOMgr::aio->setDefaultGroup(phSettings->aio.groupName.c_str());
 
   // ----- Register the BME Publisher
@@ -315,15 +308,23 @@ void PurpleHazeApp::configurePins() {
   // Initialize the synthetic grounds
   for (int i = 0; i < hwConfig.nSyntheticGrounds; i++) {
     uint8_t pin = hwConfig.syntheticGrounds[i];
-    if (pin != UNUSED_PIN) {
+    if (pin != Basics::UnusedPin) {
       pinMode(pin, OUTPUT);
       digitalWrite(pin, LOW);      
+    }
+  }
+
+  // Register any physical buttons that are connected
+  for (int i = 0; i < hwConfig.nPhysicalButtons; i++) {
+    uint8_t pin = hwConfig.physicalButtons[i];
+    if (pin != Basics::UnusedPin) {
+      WebThing::buttonMgr.addButton(pin);
     }
   }
 }
 
 void PurpleHazeApp::configureIndicators() {
-  if (NEOPIXEL_PIN == UNUSED_PIN) {
+  if (NEOPIXEL_PIN == Basics::UnusedPin) {
     indicators = NULL;
     qualityIndicator = new Indicator();
     sensorIndicator = new Indicator();
