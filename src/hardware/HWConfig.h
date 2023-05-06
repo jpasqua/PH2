@@ -37,7 +37,6 @@
 // The available types are defined in DeviceTypes.h. This config provides
 // options based on DEVICE_TYPE_OLED, including NONE.
 //------------------------------------------------------------------------------
-#define DEVICE_TYPE DEVICE_TYPE_OLED
 #include <gui/Display.h>
 
 
@@ -143,5 +142,27 @@ constexpr HWConfig hwConfig {
   syntheticGrounds, countof(syntheticGrounds),
   physicalButtons[0], physicalButtons[1]
 };
+
+/*------------------------------------------------------------------------------
+ *
+ * Sanity Checks
+ *
+ *----------------------------------------------------------------------------*/
+
+#if DEVICE_TYPE != DEVICE_TYPE_OLED
+  #error ERROR: DEVICE_TYPE must be DEVICE_TYPE_OLED
+#endif
+
+#if defined(PROCESSOR_ASSERT)
+  #if defined(ESP8266)
+    #if PROCESSOR_ASSERT != PROCESSOR_ESP8266
+      #error Processor set in IDE is ESP8266, expexted ESP32
+    #endif
+  #elif defined(ESP32)
+    #if PROCESSOR_ASSERT != PROCESSOR_ESP32
+      #error Processor set in IDE is ESP32, expexted ESP8266
+    #endif
+  #endif
+#endif
 
 #endif  // HWConfig_h

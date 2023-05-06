@@ -17,6 +17,7 @@
    * discrete parts wired the same way can also use this configuration
    *
    *----------------------------------------------------------------------------*/
+  #define PROCESSOR_ASSERT PROCESSOR_ESP8266
 
   // ----- I2C Settings
   constexpr Basics::Pin SDA_PIN = D3;
@@ -74,6 +75,7 @@
    * this configuration
    *
    *----------------------------------------------------------------------------*/
+  #define PROCESSOR_ASSERT PROCESSOR_ESP8266
 
   // ----- I2C Settings
   constexpr Basics::Pin SDA_PIN = D3;
@@ -126,6 +128,7 @@
    * a physical AQI sensor (though you can mock one).
    *
    *----------------------------------------------------------------------------*/
+  #define PROCESSOR_ASSERT PROCESSOR_ESP8266
 
   // ----- I2C Settings
   constexpr Basics::Pin SDA_PIN = D2;
@@ -177,6 +180,7 @@
    * Config Info for D1Mini with no display
    *
    *----------------------------------------------------------------------------*/
+  #define PROCESSOR_ASSERT PROCESSOR_ESP8266
 
   // ----- I2C Settings
   constexpr Basics::Pin SDA_PIN = D2;
@@ -231,6 +235,7 @@
    * a physical AQI sensor (though you can mock one).
    *
    *----------------------------------------------------------------------------*/
+  #define PROCESSOR_ASSERT PROCESSOR_ESP8266
 
   // ----- I2C Settings
   constexpr Basics::Pin SDA_PIN = D1;
@@ -275,6 +280,7 @@
    * a physical AQI sensor (though you can mock one).
    * - WEMOS LOLIN32
    *----------------------------------------------------------------------------*/
+  #define PROCESSOR_ASSERT PROCESSOR_ESP32
 
   // ----- I2C Settings
   constexpr Basics::Pin SDA_PIN = 5;
@@ -316,6 +322,7 @@
    * Config for an ESP32 D1 Mini built up with discrete components
    *
    *----------------------------------------------------------------------------*/
+  #define PROCESSOR_ASSERT PROCESSOR_ESP32
 
   // ----- I2C Settings
   constexpr Basics::Pin SDA_PIN = 21;
@@ -368,6 +375,7 @@
    * Config for an ESP32 D1 Mini built up with discrete components
    *
    *----------------------------------------------------------------------------*/
+  #define PROCESSOR_ASSERT PROCESSOR_ESP32
 
   // ----- I2C Settings
   constexpr Basics::Pin SDA_PIN = 21;
